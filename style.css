@@ -269,7 +269,6 @@ main .names {
 
 .comp-name {
   font-size: 2.25rem;
-  margin: 0.5rem 0;
 
   font-weight: bold;
   color: lightsalmon;
@@ -320,10 +319,11 @@ footer {
   text-transform: uppercase;
   background-image: linear-gradient(
     -225deg,
-    #231557 0%,
-    #44107a 29%,
-    #ff1361 67%,
-    #fff800 100%
+    #805ad5 0%,
+    #6b46c1 25%,
+    #38a169 50%,
+    #2f855a 75%,
+    #ffd700 100%
   );
   background-size: auto auto;
   background-clip: border-box;
