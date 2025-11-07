@@ -365,6 +365,17 @@
 	</style>
 	<script src="a11y.js"></script>
 	<script>
+		const STATE = {
+			page: 1,
+			perPage: 10,
+			layout: "card", // or 'list'
+			sort: "date",
+			lang: "zh",
+			courses: [],
+			allPages: 1,
+			searchQuery: "",
+		};
+
 		const translations = {
 			zh: {
 				pageTitle: '課程詳細資料',
@@ -582,7 +593,8 @@
 
 				// const course = STATE.courses.find((c) => c.code === courseCode);
 
-				const course = normalizeCourses(json)[0];
+				console.log(normalizeCourses(json))
+				const course = normalizeCourses(json)?.[0];
 				if (course) {
 					sessionStorage.setItem("currentCourse", JSON.stringify(course.raw));
 				}
@@ -590,7 +602,8 @@
 				// render();
 				// renderPagination();
 			} catch (e) {
-				coursesContainer.innerHTML = `<div class="p-6 bg-white rounded shadow">${e.message}</div>`;
+				console.error(e);
+				// coursesContainer.innerHTML = `<div class="p-6 bg-white rounded shadow">${e.message}</div>`;
 			}
 		}
 
