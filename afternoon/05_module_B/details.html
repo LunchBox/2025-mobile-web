@@ -1,655 +1,773 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>課程詳細資料</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans', 'Noto Sans TC', sans-serif;
-            background-color: #E9F5F4;
-        }
-        .btn-primary {
-            background-color: #00897B;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #00695C;
-        }
-        .details-label font-bold {
-            @apply text-base font-bold text-gray-800;
-        }
-        .details-value {
-            @apply text-gray-800;
-        }
-        #favBtn[aria-pressed="true"] .heart {
-            color: #E53935; /* red-500 */
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>課程詳細資料</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap"
+		rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Noto Sans', 'Noto Sans TC', sans-serif;
+			background-color: #E9F5F4;
+		}
 
-        /* High Contrast Mode */
-        .high-contrast {
-            background-color: #000 !important;
-            color: #fff !important;
-        }
-        .high-contrast .bg-white, .high-contrast .bg-gray-50 {
-            background-color: #000 !important;
-            color: #fff !important;
-            border: 1px solid #fff;
-        }
-        .high-contrast header, .high-contrast footer {
-            border-color: #fff;
-        }
-        .high-contrast [class*="text-gray"] {
-            color: #fff !important;
-        }
-        .high-contrast .text-teal-700 {
-            color: #80CBC4 !important; /* A lighter teal for contrast */
-        }
-        .high-contrast .btn-primary {
-            background-color: #000;
-            border: 1px solid #fff;
-            color: #fff;
-        }
-        .high-contrast img {
-            filter: grayscale(100%) contrast(200%);
-        }
-        .high-contrast #favBtn {
-            color: #fff !important;
-        }
-        .high-contrast #favBtn[aria-pressed="true"] .heart {
-            color: #FF8A80 !important; /* light red */
-        }
+		.btn-primary {
+			background-color: #00897B;
+			color: white;
+		}
 
-        /* Dropdown animation */
-        .details-anim summary svg {
-            transition: transform .18s ease;
-        }
-        .details-anim[open] summary svg {
-            transform: rotate(180deg);
-        }
-        .details-anim > .dropdown-panel {
-            opacity: 0;
-            transform: translateY(-6px) scale(.99);
-            transition: opacity .18s ease, transform .18s ease;
-            pointer-events: none;
-        }
-        .details-anim[open] > .dropdown-panel {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
+		.btn-primary:hover {
+			background-color: #00695C;
+		}
 
-        /* Message Board Styles */
-        #messages{max-height:60vh; overflow:auto; padding-right:4px}
-        .break-words{word-break:break-word}
-        .message-text:focus{
-            outline: 2px solid rgba(2,6,23,0.06);
-            outline-offset: 2px;
-            caret-color: black;
-        }
-        .message-text{caret-color: black}
-        .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 9999px;
-            overflow: hidden;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .author-row { display: flex; align-items: center; gap: 8px }
-        .author-name { display: inline-block }
-    </style>
+		.details-label font-bold {
+			@apply text-base font-bold text-gray-800;
+		}
+
+		.details-value {
+			@apply text-gray-800;
+		}
+
+		#favBtn[aria-pressed="true"] .heart {
+			color: #E53935;
+			/* red-500 */
+		}
+
+		/* High Contrast Mode */
+		.high-contrast {
+			background-color: #000 !important;
+			color: #fff !important;
+		}
+
+		.high-contrast .bg-white,
+		.high-contrast .bg-gray-50 {
+			background-color: #000 !important;
+			color: #fff !important;
+			border: 1px solid #fff;
+		}
+
+		.high-contrast header,
+		.high-contrast footer {
+			border-color: #fff;
+		}
+
+		.high-contrast [class*="text-gray"] {
+			color: #fff !important;
+		}
+
+		.high-contrast .text-teal-700 {
+			color: #80CBC4 !important;
+			/* A lighter teal for contrast */
+		}
+
+		.high-contrast .btn-primary {
+			background-color: #000;
+			border: 1px solid #fff;
+			color: #fff;
+		}
+
+		.high-contrast img {
+			filter: grayscale(100%) contrast(200%);
+		}
+
+		.high-contrast #favBtn {
+			color: #fff !important;
+		}
+
+		.high-contrast #favBtn[aria-pressed="true"] .heart {
+			color: #FF8A80 !important;
+			/* light red */
+		}
+
+		/* Dropdown animation */
+		.details-anim summary svg {
+			transition: transform .18s ease;
+		}
+
+		.details-anim[open] summary svg {
+			transform: rotate(180deg);
+		}
+
+		.details-anim>.dropdown-panel {
+			opacity: 0;
+			transform: translateY(-6px) scale(.99);
+			transition: opacity .18s ease, transform .18s ease;
+			pointer-events: none;
+		}
+
+		.details-anim[open]>.dropdown-panel {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+			pointer-events: auto;
+		}
+
+		/* Message Board Styles */
+		#messages {
+			max-height: 60vh;
+			overflow: auto;
+			padding-right: 4px
+		}
+
+		.break-words {
+			word-break: break-word
+		}
+
+		.message-text:focus {
+			outline: 2px solid rgba(2, 6, 23, 0.06);
+			outline-offset: 2px;
+			caret-color: black;
+		}
+
+		.message-text {
+			caret-color: black
+		}
+
+		.avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 9999px;
+			overflow: hidden;
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.author-row {
+			display: flex;
+			align-items: center;
+			gap: 8px
+		}
+
+		.author-name {
+			display: inline-block
+		}
+	</style>
 </head>
+
 <body class="text-gray-700">
 
-    <header class="bg-white shadow-sm sticky top-0 z-30">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800" data-lang="pageTitle">課程詳細資料</h1>
-                <p class="text-sm text-gray-500" data-lang="pageSubtitle">澳門生產力暨科技轉移中心</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="index.html" class="btn-primary px-4 py-2 rounded-md transition-colors whitespace-nowrap flex-shrink-0" data-lang="backToList">返回列表</a>
+	<header class="bg-white shadow-sm sticky top-0 z-30">
+		<div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+			<div>
+				<h1 class="text-2xl md:text-3xl font-bold text-gray-800" data-lang="pageTitle">課程詳細資料</h1>
+				<p class="text-sm text-gray-500" data-lang="pageSubtitle">澳門生產力暨科技轉移中心</p>
+			</div>
+			<div class="flex items-center gap-3">
+				<a href="index.html" class="btn-primary px-4 py-2 rounded-md transition-colors whitespace-nowrap flex-shrink-0"
+					data-lang="backToList">返回列表</a>
 
-                <!-- Accessibility Dropdown -->
-                <div class="relative">
-                    <details class="relative details-anim">
-                        <summary class="flex items-center gap-2 bg-white text-gray-700 p-2 rounded-md cursor-pointer list-none select-none border" aria-label="Accessibility Options">
-                            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                        </summary>
-                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
-                            <div class="p-4">
-                                <label for="highContrastToggleDesktop" class="flex items-center justify-between cursor-pointer">
-                                    <span class="font-medium" data-lang="highContrast">高對比度</span>
-                                    <div class="relative">
-                                        <input type="checkbox" id="highContrastToggleDesktop" class="sr-only" />
-                                        <div class="block bg-gray-200 w-10 h-6 rounded-full"></div>
-                                        <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </details>
-                </div>
+				<!-- Accessibility Dropdown -->
+				<div class="relative">
+					<details class="relative details-anim">
+						<summary
+							class="flex items-center gap-2 bg-white text-gray-700 p-2 rounded-md cursor-pointer list-none select-none border"
+							aria-label="Accessibility Options">
+							<svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+									clip-rule="evenodd" />
+							</svg>
+						</summary>
+						<div
+							class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
+							<div class="p-4">
+								<label for="highContrastToggleDesktop" class="flex items-center justify-between cursor-pointer">
+									<span class="font-medium" data-lang="highContrast">高對比度</span>
+									<div class="relative">
+										<input type="checkbox" id="highContrastToggleDesktop" class="sr-only" />
+										<div class="block bg-gray-200 w-10 h-6 rounded-full"></div>
+										<div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
+									</div>
+								</label>
+							</div>
+						</div>
+					</details>
+				</div>
 
-                <div class="border rounded-md px-2 py-2 flex items-center gap-2">
-                  <label for="langToggle">
-                    <img src="images/translate.png" alt="Language" class="w-5 h-5">
-                  </label>
-                  <button id="langToggle" class="text-sm">EN</button>
-                </div>
-            </div>
-        </div>
-    </header>
+				<div class="border rounded-md px-2 py-2 flex items-center gap-2">
+					<label for="langToggle">
+						<img src="images/translate.png" alt="Language" class="w-5 h-5">
+					</label>
+					<button id="langToggle" class="text-sm">EN</button>
+				</div>
+			</div>
+		</div>
+	</header>
 
-    <main class="max-w-4xl mx-auto p-4 md:p-6">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <!-- Left Column: Main Details -->
-                <div class="md:col-span-2 md:order-1">
-                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                        <h2 id="courseName" class="text-2xl font-bold text-gray-900"></h2>
-                        <button id="favBtn" aria-label="收藏課程" class="hidden md:flex flex-shrink-0 items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
-                            <span class="heart text-2xl">♡</span>
-                            <span data-lang="favorite" class="font-bold">收藏</span>
-                        </button>
-                    </div>
+	<main class="max-w-4xl mx-auto p-4 md:p-6">
+		<div class="bg-white rounded-lg shadow-lg overflow-hidden">
+			<div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+				<!-- Left Column: Main Details -->
+				<div class="md:col-span-2 md:order-1">
+					<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+						<h2 id="courseName" class="text-2xl font-bold text-gray-900"></h2>
+						<button id="favBtn" aria-label="收藏課程"
+							class="hidden md:flex flex-shrink-0 items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
+							<span class="heart text-2xl">♡</span>
+							<span data-lang="favorite" class="font-bold">收藏</span>
+						</button>
+					</div>
 
-                    <!-- Mobile: Fav, Fee, Capacity row -->
-                    <div class="mt-4 flex justify-between items-center gap-4 md:hidden">
-                        <div class="flex gap-4">
-                            <div>
-                                <div class="details-label font-bold" data-lang="fee">學費</div>
-                                <div id="feeMobile" class="details-value text-lg font-semibold text-teal-700"></div>
-                            </div>
-                            <div>
-                                <div class="details-label font-bold" data-lang="capacity">名額</div>
-                                <div id="capacityMobile" class="details-value"></div>
-                            </div>
-                        </div>
-                        <button id="favBtnMobile" aria-label="收藏課程" class="flex-shrink-0 flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
-                            <span class="heart text-2xl">♡</span>
-                            <span data-lang="favorite" class="font-bold">收藏</span>
-                        </button>
-                    </div>
+					<!-- Mobile: Fav, Fee, Capacity row -->
+					<div class="mt-4 flex justify-between items-center gap-4 md:hidden">
+						<div class="flex gap-4">
+							<div>
+								<div class="details-label font-bold" data-lang="fee">學費</div>
+								<div id="feeMobile" class="details-value text-lg font-semibold text-teal-700"></div>
+							</div>
+							<div>
+								<div class="details-label font-bold" data-lang="capacity">名額</div>
+								<div id="capacityMobile" class="details-value"></div>
+							</div>
+						</div>
+						<button id="favBtnMobile" aria-label="收藏課程"
+							class="flex-shrink-0 flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
+							<span class="heart text-2xl">♡</span>
+							<span data-lang="favorite" class="font-bold">收藏</span>
+						</button>
+					</div>
 
-                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="courseCode">課程編號</div>
-                            <div id="courseCode" class="details-value"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="objective">課程目標</div>
-                            <div id="objective" class="details-value"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="assessment">評核方式</div>
-                            <div id="assessment" class="details-value"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="content">課程內容</div>
-                            <div id="content" class="details-value prose max-w-none"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="targetAudience">適合報讀人士</div>
-                            <div id="targetAudience" class="details-value"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="prerequisites">修讀條件</div>
-                            <div id="prerequisites" class="details-value"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="instructor">導師介紹</div>
-                            <div id="instructor" class="details-value"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="instructionLanguage">講課語言</div>
-                            <div id="instructionLanguage" class="details-value"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="handoutLanguage">派發資料語言</div>
-                            <div id="handoutLanguage" class="details-value"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="duration">課程學時</div>
-                            <div id="duration" class="details-value"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="venue">上課地點</div>
-                            <div id="venue" class="details-value"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="schedule">詳細時間表</div>
-                            <div id="schedule" class="details-value"></div>
-                        </div>
-                        <div>
-                            <div class="details-label font-bold" data-lang="certificate">證書</div>
-                            <div id="certificate" class="details-value"></div>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <div class="details-label font-bold" data-lang="remarks">備註</div>
-                            <div id="remarks" class="details-value"></div>
-                        </div>
-                    </div>
-                    <!-- Mobile Register Button -->
-                    <div class="mt-6 md:hidden">
-                        <a href="register.html" id="registerBtnMobile" class="block text-center w-full btn-primary px-4 py-3 rounded-md transition-colors text-lg" data-lang="registerNow">立即報名</a>
-                    </div>
-                </div>
+					<div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="courseCode">課程編號</div>
+							<div id="courseCode" class="details-value"></div>
+						</div>
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="objective">課程目標</div>
+							<div id="objective" class="details-value"></div>
+						</div>
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="assessment">評核方式</div>
+							<div id="assessment" class="details-value"></div>
+						</div>
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="content">課程內容</div>
+							<div id="content" class="details-value prose max-w-none"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="targetAudience">適合報讀人士</div>
+							<div id="targetAudience" class="details-value"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="prerequisites">修讀條件</div>
+							<div id="prerequisites" class="details-value"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="instructor">導師介紹</div>
+							<div id="instructor" class="details-value"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="instructionLanguage">講課語言</div>
+							<div id="instructionLanguage" class="details-value"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="handoutLanguage">派發資料語言</div>
+							<div id="handoutLanguage" class="details-value"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="duration">課程學時</div>
+							<div id="duration" class="details-value"></div>
+						</div>
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="venue">上課地點</div>
+							<div id="venue" class="details-value"></div>
+						</div>
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="schedule">詳細時間表</div>
+							<div id="schedule" class="details-value"></div>
+						</div>
+						<div>
+							<div class="details-label font-bold" data-lang="certificate">證書</div>
+							<div id="certificate" class="details-value"></div>
+						</div>
+						<div class="sm:col-span-2">
+							<div class="details-label font-bold" data-lang="remarks">備註</div>
+							<div id="remarks" class="details-value"></div>
+						</div>
+					</div>
+					<!-- Mobile Register Button -->
+					<div class="mt-6 md:hidden">
+						<a href="register.html" id="registerBtnMobile"
+							class="block text-center w-full btn-primary px-4 py-3 rounded-md transition-colors text-lg"
+							data-lang="registerNow">立即報名</a>
+					</div>
+				</div>
 
-                <!-- Right Column: Image, Fee, Capacity -->
-                <div class="md:col-span-1 order-first md:order-2 flex flex-col gap-4">
-                    <img id="courseImage" src="" alt="課程圖片" class="w-full h-auto object-cover rounded-lg shadow-md cursor-pointer" data-zoomable>
-                    <div class="hidden md:block">
-                        <div class="details-label font-bold" data-lang="fee">學費</div>
-                        <div id="fee" class="details-value text-lg font-semibold text-teal-700"></div>
-                    </div>
-                    <div class="hidden md:block">
-                        <div class="details-label font-bold" data-lang="capacity">名額</div>
-                        <div id="capacity" class="details-value"></div>
-                    </div>
-                    <a href="register.html" id="registerBtnDesktop" class="hidden md:block text-center w-full btn-primary px-4 py-3 rounded-md transition-colors mt-4 text-lg" data-lang="registerNow">立即報名</a>
-                </div>
-            </div>
-        </div>
+				<!-- Right Column: Image, Fee, Capacity -->
+				<div class="md:col-span-1 order-first md:order-2 flex flex-col gap-4">
+					<img id="courseImage" src="" alt="課程圖片" class="w-full h-auto object-cover rounded-lg shadow-md cursor-pointer"
+						data-zoomable>
+					<div class="hidden md:block">
+						<div class="details-label font-bold" data-lang="fee">學費</div>
+						<div id="fee" class="details-value text-lg font-semibold text-teal-700"></div>
+					</div>
+					<div class="hidden md:block">
+						<div class="details-label font-bold" data-lang="capacity">名額</div>
+						<div id="capacity" class="details-value"></div>
+					</div>
+					<a href="register.html" id="registerBtnDesktop"
+						class="hidden md:block text-center w-full btn-primary px-4 py-3 rounded-md transition-colors mt-4 text-lg"
+						data-lang="registerNow">立即報名</a>
+				</div>
+			</div>
+		</div>
 
-        <!-- Message Board -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden mt-8">
-            <div class="p-6 md:p-8">
-                <header class="mb-6">
-                    <h1 class="text-3xl font-bold text-slate-800" data-lang="messageBoardTitle">課程討論區</h1>
-                </header>
+		<!-- Message Board -->
+		<div class="bg-white rounded-lg shadow-lg overflow-hidden mt-8">
+			<div class="p-6 md:p-8">
+				<header class="mb-6">
+					<h1 class="text-3xl font-bold text-slate-800" data-lang="messageBoardTitle">課程討論區</h1>
+				</header>
 
-                <!-- Composer: fixed on small screens, static on sm+ -->
-                <section class="mb-6">
-                    <form id="message-form" class="bg-white p-4 rounded flex flex-col items-stretch gap-3">
-                        <div class="flex-1">
-                            <label for="message" class="sr-only" data-lang="messageLabel">留言</label>
-                            <input type="text" id="message" name="message" required data-lang-placeholder="messagePlaceholder" placeholder="請輸入留言..." autofocus class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm">
-                            <p id="form-error" class="mt-2 text-sm text-red-600 sr-only" aria-live="polite"></p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700" data-lang="submit">送出</button>
-                        </div>
-                    </form>
-                </section>
+				<!-- Composer: fixed on small screens, static on sm+ -->
+				<section class="mb-6">
+					<form id="message-form" class="bg-white p-4 rounded flex flex-col items-stretch gap-3">
+						<div class="flex-1">
+							<label for="message" class="sr-only" data-lang="messageLabel">留言</label>
+							<input type="text" id="message" name="message" required data-lang-placeholder="messagePlaceholder"
+								placeholder="請輸入留言..." autofocus
+								class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm">
+							<p id="form-error" class="mt-2 text-sm text-red-600 sr-only" aria-live="polite"></p>
+						</div>
+						<div class="flex-shrink-0">
+							<button type="submit"
+								class="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700"
+								data-lang="submit">送出</button>
+						</div>
+					</form>
+				</section>
 
-                <section>
-                    <div id="messages" class="space-y-4"></div>
-                </section>
-            </div>
-        </div>
-    </main>
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed right-6 bottom-6 bg-white shadow-lg rounded-lg p-4 opacity-0 translate-y-6 transition-all duration-300 z-50 high-contrast:bg-black high-contrast:border high-contrast:border-white">
-        <div class="flex items-center justify-between gap-4">
-            <div id="toastMessage" class="min-w-[160px]"></div>
-            <button id="closeToast" class="text-gray-600 hover:text-gray-900 high-contrast:text-white" data-lang="btnClose">關閉</button>
-        </div>
-    </div>
-    <style>
-        input[type="checkbox"]:checked + div + .dot {
-            transform: translateX(100%);
-            background-color: #00897B;
-        }
-    </style>
-    <script src="a11y.js"></script>
-    <script>
-        const translations = {
-            zh: {
-                pageTitle: '課程詳細資料',
-                pageSubtitle: '澳門生產力暨科技轉移中心',
-                backToList: '返回列表',
-                favorite: '收藏',
-                courseCode: '課程編號',
-                fee: '學費',
-                objective: '課程目標',
-                assessment: '評核方式',
-                content: '課程內容',
-                targetAudience: '適合報讀人士',
-                prerequisites: '修讀條件',
-                capacity: '名額',
-                instructor: '導師介紹',
-                instructionLanguage: '講課語言',
-                handoutLanguage: '派發資料語言',
-                duration: '課程學時',
-                venue: '上課地點',
-                schedule: '詳細時間表',
-                certificate: '證書',
-                remarks: '備註',
-                highContrast: '高對比度',
-                free: '免費',
-                registerNow: '立即報名',
-                btnClose: '關閉',
-                // Message Board Translations
-                messageBoardTitle: '課程討論區',
-                messageLabel: '留言',
-                messagePlaceholder: '請輸入留言...',
-                submit: '送出',
-                edit: '編輯',
-                delete: '刪除',
-                confirmDelete: '確定要刪除此則留言嗎？',
-                editOwnMessage: '您只能編輯自己的留言',
-                messageEmpty: '留言不可為空',
-                noMessages: '目前還沒有留言，成為第一位留言的人吧！',
-                done: '完成',
-            },
-            en: {
-                pageTitle: 'Course Details',
-                pageSubtitle: 'Macau Productivity and Technology Transfer Center',
-                backToList: 'Back to List',
-                favorite: 'Favorite',
-                courseCode: 'Course Code',
-                fee: 'Fee',
-                objective: 'Objective',
-                assessment: 'Assessment',
-                content: 'Content',
-                targetAudience: 'Target Audience',
-                prerequisites: 'Prerequisites',
-                capacity: 'Capacity',
-                instructor: 'Instructor',
-                instructionLanguage: 'Instruction Language',
-                handoutLanguage: 'Handout Language',
-                duration: 'Duration',
-                venue: 'Venue',
-                schedule: 'Schedule',
-                certificate: 'Certificate',
-                remarks: 'Remarks',
-                highContrast: 'High Contrast',
-                free: 'Free',
-                registerNow: 'Register Now',
-                btnClose: 'Close',
-                // Message Board Translations
-                messageBoardTitle: 'Course Discussion',
-                messageLabel: 'Message',
-                messagePlaceholder: 'Enter your message...',
-                submit: 'Submit',
-                edit: 'Edit',
-                delete: 'Delete',
-                confirmDelete: 'Are you sure you want to delete this message?',
-                editOwnMessage: 'You can only edit your own messages.',
-                messageEmpty: 'Message cannot be empty.',
-                noMessages: 'No messages yet. Be the first to comment!',
-                done: 'Done',
-            }
-        };
+				<section>
+					<div id="messages" class="space-y-4"></div>
+				</section>
+			</div>
+		</div>
+	</main>
+	<!-- Toast Notification -->
+	<div id="toast"
+		class="fixed right-6 bottom-6 bg-white shadow-lg rounded-lg p-4 opacity-0 translate-y-6 transition-all duration-300 z-50 high-contrast:bg-black high-contrast:border high-contrast:border-white">
+		<div class="flex items-center justify-between gap-4">
+			<div id="toastMessage" class="min-w-[160px]"></div>
+			<button id="closeToast" class="text-gray-600 hover:text-gray-900 high-contrast:text-white"
+				data-lang="btnClose">關閉</button>
+		</div>
+	</div>
+	<style>
+		input[type="checkbox"]:checked+div+.dot {
+			transform: translateX(100%);
+			background-color: #00897B;
+		}
+	</style>
+	<script src="a11y.js"></script>
+	<script>
+		const translations = {
+			zh: {
+				pageTitle: '課程詳細資料',
+				pageSubtitle: '澳門生產力暨科技轉移中心',
+				backToList: '返回列表',
+				favorite: '收藏',
+				courseCode: '課程編號',
+				fee: '學費',
+				objective: '課程目標',
+				assessment: '評核方式',
+				content: '課程內容',
+				targetAudience: '適合報讀人士',
+				prerequisites: '修讀條件',
+				capacity: '名額',
+				instructor: '導師介紹',
+				instructionLanguage: '講課語言',
+				handoutLanguage: '派發資料語言',
+				duration: '課程學時',
+				venue: '上課地點',
+				schedule: '詳細時間表',
+				certificate: '證書',
+				remarks: '備註',
+				highContrast: '高對比度',
+				free: '免費',
+				registerNow: '立即報名',
+				btnClose: '關閉',
+				// Message Board Translations
+				messageBoardTitle: '課程討論區',
+				messageLabel: '留言',
+				messagePlaceholder: '請輸入留言...',
+				submit: '送出',
+				edit: '編輯',
+				delete: '刪除',
+				confirmDelete: '確定要刪除此則留言嗎？',
+				editOwnMessage: '您只能編輯自己的留言',
+				messageEmpty: '留言不可為空',
+				noMessages: '目前還沒有留言，成為第一位留言的人吧！',
+				done: '完成',
+			},
+			en: {
+				pageTitle: 'Course Details',
+				pageSubtitle: 'Macau Productivity and Technology Transfer Center',
+				backToList: 'Back to List',
+				favorite: 'Favorite',
+				courseCode: 'Course Code',
+				fee: 'Fee',
+				objective: 'Objective',
+				assessment: 'Assessment',
+				content: 'Content',
+				targetAudience: 'Target Audience',
+				prerequisites: 'Prerequisites',
+				capacity: 'Capacity',
+				instructor: 'Instructor',
+				instructionLanguage: 'Instruction Language',
+				handoutLanguage: 'Handout Language',
+				duration: 'Duration',
+				venue: 'Venue',
+				schedule: 'Schedule',
+				certificate: 'Certificate',
+				remarks: 'Remarks',
+				highContrast: 'High Contrast',
+				free: 'Free',
+				registerNow: 'Register Now',
+				btnClose: 'Close',
+				// Message Board Translations
+				messageBoardTitle: 'Course Discussion',
+				messageLabel: 'Message',
+				messagePlaceholder: 'Enter your message...',
+				submit: 'Submit',
+				edit: 'Edit',
+				delete: 'Delete',
+				confirmDelete: 'Are you sure you want to delete this message?',
+				editOwnMessage: 'You can only edit your own messages.',
+				messageEmpty: 'Message cannot be empty.',
+				noMessages: 'No messages yet. Be the first to comment!',
+				done: 'Done',
+			}
+		};
 
-        let currentLang = localStorage.getItem('lang') || 'zh';
-        const langToggle = document.getElementById('langToggle');
+		let currentLang = localStorage.getItem('lang') || 'zh';
+		const langToggle = document.getElementById('langToggle');
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('lang', lang);
-            langToggle.textContent = lang === 'zh' ? 'EN' : '中';
-            
-            const trans = translations[lang];
-            document.querySelectorAll('[data-lang]').forEach(el => {
-                const key = el.dataset.lang;
-                if (trans[key]) {
-                    el.textContent = trans[key];
-                }
-            });
-            
-            // Update document language attribute
-            document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
+		function setLanguage(lang) {
+			currentLang = lang;
+			localStorage.setItem('lang', lang);
+			langToggle.textContent = lang === 'zh' ? 'EN' : '中';
 
-            // Re-render course details with the new language
-            renderCourseDetails();
-        }
+			const trans = translations[lang];
+			document.querySelectorAll('[data-lang]').forEach(el => {
+				const key = el.dataset.lang;
+				if (trans[key]) {
+					el.textContent = trans[key];
+				}
+			});
 
-        langToggle.addEventListener('click', () => {
-            setLanguage(currentLang === 'zh' ? 'en' : 'zh');
-        });
+			// Update document language attribute
+			document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
 
-        let courseData = null;
+			// Re-render course details with the new language
+			renderCourseDetails();
+		}
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const closeToast = document.getElementById('closeToast');
-            if (!toast || !toastMessage || !closeToast) return;
+		langToggle.addEventListener('click', () => {
+			setLanguage(currentLang === 'zh' ? 'en' : 'zh');
+		});
 
-            toastMessage.textContent = message;
-            toast.classList.remove('opacity-0', 'translate-y-6');
+		let courseData = null;
 
-            const close = () => {
-                toast.classList.add('opacity-0', 'translate-y-6');
-            };
+		function showToast(message) {
+			const toast = document.getElementById('toast');
+			const toastMessage = document.getElementById('toastMessage');
+			const closeToast = document.getElementById('closeToast');
+			if (!toast || !toastMessage || !closeToast) return;
 
-            closeToast.onclick = close;
-            setTimeout(close, 3000);
-        }
+			toastMessage.textContent = message;
+			toast.classList.remove('opacity-0', 'translate-y-6');
 
-        function renderCourseDetails() {
-            if (!courseData) return;
-            
-            const lang = currentLang;
-            const display = (id, value) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerHTML = value || '';
-                }
-            };
+			const close = () => {
+				toast.classList.add('opacity-0', 'translate-y-6');
+			};
 
-            const courseImage = document.getElementById('courseImage');
-            if (courseImage) {
-                const baseCode = courseData.course_code.split(/[.-]/)[0];
-                const imageUrl = `images/${baseCode}.png`;
-                courseImage.src = imageUrl;
-                courseImage.alt = (lang === 'en' ? courseData.e_title : courseData.c_title) || 'Course Image';
-                courseImage.onerror = () => {
-                    courseImage.src = 'images/default.png'; // Fallback image
-                    courseImage.alt = 'Default course image';
-                };
-            }
+			closeToast.onclick = close;
+			setTimeout(close, 3000);
+		}
 
-            display('courseName', lang === 'en' ? courseData.e_title : courseData.c_title);
-            display('courseCode', courseData.course_code);
-            display('objective', lang === 'en' ? courseData.e_objective : courseData.c_objective);
-            display('content', lang === 'en' ? courseData.e_content : courseData.c_content);
-            display('assessment', lang === 'en' ? courseData.e_assessment : courseData.c_assessment);
-            display('targetAudience', lang === 'en' ? courseData.e_target : courseData.c_target);
-            display('prerequisites', lang === 'en' ? courseData.e_prerequisite : courseData.c_prerequisite);
-            display('capacity', courseData.size);
-            display('instructor', lang === 'en' ? courseData.e_tutor : courseData.c_tutor);
-            display('instructionLanguage', lang === 'en' ? courseData.e_language : courseData.c_language);
-            display('handoutLanguage', lang === 'en' ? courseData.e_handout : courseData.c_handout);
-            display('duration', lang === 'en' ? courseData.e_duration : courseData.c_duration);
-            display('schedule', lang === 'en' ? courseData.e_schedule : courseData.c_schedule);
-            
-            let feeText = '';
-            if (courseData.fees && courseData.fees.length > 0) {
-                const fee = courseData.fees[0].amount || courseData.fees[0].fee;
-                feeText = fee === 0 ? translations[lang].free : `MOP ${fee}`;
-            }
-            display('fee', feeText);
+		function renderCourseDetails() {
+			if (!courseData) return;
 
-            display('venue', lang === 'en' ? courseData.e_venue : courseData.c_venue);
-            display('certificate', lang === 'en' ? courseData.e_certificate : courseData.c_certificate);
-            display('remarks', lang === 'en' ? courseData.e_remark : courseData.c_remark);
+			const lang = currentLang;
+			const display = (id, value) => {
+				const el = document.getElementById(id);
+				if (el) {
+					el.innerHTML = value || '';
+				}
+			};
 
-            // Also update mobile-specific elements
-            display('feeMobile', feeText);
-            display('capacityMobile', courseData.size);
-        }
+			const courseImage = document.getElementById('courseImage');
+			if (courseImage) {
+				const baseCode = courseData.course_code.split(/[.-]/)[0];
+				const imageUrl = `images/${baseCode}.png`;
+				courseImage.src = imageUrl;
+				courseImage.alt = (lang === 'en' ? courseData.e_title : courseData.c_title) || 'Course Image';
+				courseImage.onerror = () => {
+					courseImage.src = 'images/default.png'; // Fallback image
+					courseImage.alt = 'Default course image';
+				};
+			}
 
+			display('courseName', lang === 'en' ? courseData.e_title : courseData.c_title);
+			display('courseCode', courseData.course_code);
+			display('objective', lang === 'en' ? courseData.e_objective : courseData.c_objective);
+			display('content', lang === 'en' ? courseData.e_content : courseData.c_content);
+			display('assessment', lang === 'en' ? courseData.e_assessment : courseData.c_assessment);
+			display('targetAudience', lang === 'en' ? courseData.e_target : courseData.c_target);
+			display('prerequisites', lang === 'en' ? courseData.e_prerequisite : courseData.c_prerequisite);
+			display('capacity', courseData.size);
+			display('instructor', lang === 'en' ? courseData.e_tutor : courseData.c_tutor);
+			display('instructionLanguage', lang === 'en' ? courseData.e_language : courseData.c_language);
+			display('handoutLanguage', lang === 'en' ? courseData.e_handout : courseData.c_handout);
+			display('duration', lang === 'en' ? courseData.e_duration : courseData.c_duration);
+			display('schedule', lang === 'en' ? courseData.e_schedule : courseData.c_schedule);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const dataString = sessionStorage.getItem('currentCourse');
-            if (!dataString) {
-                document.querySelector('main').innerHTML = '<div class="p-6 bg-white rounded shadow text-center text-red-500">找不到課程資料。請返回列表頁重試。</div>';
-                return;
-            }
-            
-            courseData = JSON.parse(dataString);
+			let feeText = '';
+			if (courseData.fees && courseData.fees.length > 0) {
+				const fee = courseData.fees[0].amount || courseData.fees[0].fee;
+				feeText = fee === 0 ? translations[lang].free : `MOP ${fee}`;
+			}
+			display('fee', feeText);
 
-            // --- Data Patch for all courses ---
-            const patchData = {
-                c_assessment: "完成導師指定作業",
-                e_assessment: "Complete assignments designated by the instructor",
-                c_target: "對手語有興趣或有意增加手語認識之人士，特別是有意聘請聽障人士的企業、主管級及機構相關的人士。",
-                e_target: "Individuals interested in sign language or wishing to increase their knowledge of it, especially enterprises, supervisors, and relevant personnel in organizations intending to hire hearing-impaired individuals.",
-                c_prerequisite: "已完成AT345.1手語初階(一級)",
-                e_prerequisite: "Completed AT345.1 Sign Language Elementary (Level 1)",
-                c_tutor: "澳門聾人協會導師",
-                e_tutor: "Instructor from the Macau Deaf Association",
-                c_language: "廣東話及澳門手語",
-                e_language: "Cantonese and Macau Sign Language",
-                c_handout: "中文講義 (繁體)",
-                e_handout: "Handouts in Chinese (Traditional)",
-                c_duration: "12小時8節",
-                e_duration: "12 hours in 8 sessions",
-                c_schedule: "19:30-21:00，由2025-12-2至2026-1-8內的每個星期二、星期四，除了2025-12-23（星期二）、2025-12-25（星期四）、2025-12-30（星期二）、2026-1-1（星期四）。",
-                e_schedule: "19:30-21:00, every Tuesday and Thursday from 2025-12-2 to 2026-1-8, excluding 2025-12-23 (Tue), 2025-12-25 (Thu), 2025-12-30 (Tue), 2026-1-1 (Thu).",
-                c_venue: "時尚匯點 (澳門漁翁街海洋工業中心第二期十樓)",
-                e_venue: "House of Apparel (10/F, Ocean Industrial Centre, Phase II, Rua dos Pescadores, Macau)",
-                c_certificate: "澳門聾人協會及生產力中心簽發的修業/優異證書 (出席率最少達百分之八十及各項評核合格)。",
-                e_certificate: "Certificate of Completion/Distinction issued by the Macau Deaf Association and CPTTM (requires at least 80% attendance and passing all assessments).",
-                c_remark: `獲特區政府"持續進修發展計劃"批准課程，編號2504160435-0`,
-                e_remark: `Approved course under the "Continuing Education Development Program" of the SAR Government, code 2504160435-0`
-            };
-            Object.assign(courseData, patchData);
-            // --- End Data Patch ---
+			display('venue', lang === 'en' ? courseData.e_venue : courseData.c_venue);
+			display('certificate', lang === 'en' ? courseData.e_certificate : courseData.c_certificate);
+			display('remarks', lang === 'en' ? courseData.e_remark : courseData.c_remark);
 
-            // Set initial language and render content
-            setLanguage(currentLang);
+			// Also update mobile-specific elements
+			display('feeMobile', feeText);
+			display('capacityMobile', courseData.size);
+		}
 
-            // Setup zoomable images
-            if (window.setupZoomableImages) {
-                setupZoomableImages();
-            }
+		// --- Data Normalization ---
+		function normalizeCourses(json) {
+			const raw = json.courses || json.data || [];
+			return (raw || []).map((r) => {
+				const code = r.course_code || r.courseCode || "";
+				const nameZh = r.c_title || "";
+				const nameEn = r.e_title || "";
+				const name = STATE.lang === "en" ? nameEn || nameZh : nameZh || nameEn;
 
-            // Favorite button logic
-            const favBtns = [document.getElementById('favBtn'), document.getElementById('favBtnMobile')];
-            if (favBtns.length > 0) {
-                const COURSE_KEY = 'fav_courses';
-                const courseCode = courseData.course_code;
+				let price = null;
+				if (Array.isArray(r.fees) && r.fees.length) {
+					const f = r.fees[0];
+					price = f.fee != null ? f.fee : f.amount != null ? f.amount : null;
+				}
 
-                const getFavs = () => JSON.parse(localStorage.getItem(COURSE_KEY) || '[]');
-                const saveFavs = (arr) => localStorage.setItem(COURSE_KEY, JSON.stringify(arr));
+				return {
+					code,
+					name,
+					price,
+					startDate: r.start_date || r.startDate,
+					capacity: r.size || r.capacity,
+					raw: r,
+				};
+			});
+		}
 
-                const isFav = () => getFavs().includes(courseCode);
-                
-                const updateFavUI = () => {
-                    const pressed = isFav();
-                    favBtns.forEach(btn => {
-                        if (!btn) return;
-                        const heart = btn.querySelector('.heart');
-                        btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
-                        if (heart) heart.textContent = pressed ? '❤' : '♡';
-                    });
-                };
+		async function _loadPage(page = 1) {
+			const url = `https://course-dummy-api-nine.vercel.app/courses/page-${page}.json`;
+			try {
+				const res = await fetch(url);
+				if (!res.ok) throw new Error(I18N[STATE.lang].dataError);
+				const json = await res.json();
 
-                favBtns.forEach(btn => {
-                    if (!btn) return;
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        if (!courseCode) return;
-                        const arr = getFavs();
-                        const idx = arr.indexOf(courseCode);
-                        if (idx >= 0) {
-                            arr.splice(idx, 1);
-                        } else {
-                            arr.push(courseCode);
-                        }
-                        saveFavs(arr);
-                        updateFavUI();
-                    });
-                });
+				// STATE.courses = normalizeCourses(json);
+				// STATE.allPages = calculateTotalPages(json);
+				// STATE.page = Number(json.page) || page;
 
-                updateFavUI();
-            }
+				// const course = STATE.courses.find((c) => c.code === courseCode);
 
-            // Registration button logic
-            const regBtns = [document.getElementById('registerBtnDesktop'), document.getElementById('registerBtnMobile')];
-            regBtns.forEach(btn => {
-                if (!btn) return;
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (courseData) {
-                        sessionStorage.setItem('courseToRegister', JSON.stringify(courseData));
-                        window.location.href = 'register.html';
-                    } else {
-                        alert(translations[currentLang].cannotGetCourseData || 'Cannot get course data for registration.');
-                    }
-                });
-            });
-        });
+				const course = normalizeCourses(json)[0];
+				if (course) {
+					sessionStorage.setItem("currentCourse", JSON.stringify(course.raw));
+				}
 
-        // --- Message Board Logic ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const STORAGE_KEY = 'simple_message_board_v1';
-            const VIEWER_KEY = 'simple_message_board_viewer';
+				// render();
+				// renderPagination();
+			} catch (e) {
+				coursesContainer.innerHTML = `<div class="p-6 bg-white rounded shadow">${e.message}</div>`;
+			}
+		}
 
-            const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='%23cbd5e1'><rect width='24' height='24' rx='12' fill='%23e2e8f0'/%3E<path d='M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z' fill='%2399aabb'/%3E</svg>";
-            const EMBEDDED_SEED = [
-                { id: 'seed-1', text: '歡迎來訪！' },
-                { id: 'seed-2', text: '想問一下這個課程的大概內容。' },
-                { id: 'seed-3', text: '有人可以告訴我這個課程值這個價錢嗎？' },
-                { id: 'seed-4', text: '這個網站新的功能大家覺得怎麼樣？' },
-                { id: 'seed-5', text: '得不錯！' },
-                { id: 'seed-6', text: '我有一個建議：可以加上搜尋功能。' },
-                { id: 'seed-7', text: '感謝分享，我學到了很多。' },
-                { id: 'seed-8', text: '手機瀏覽器的樣式是否正常？' },
-                { id: 'seed-9', text: '我剛加入這個留言板，大家好！' },
-                { id: 'seed-10', text: '我覺得這個價錢就能上到這課簡直就是賺了。' }
-            ];
+		document.addEventListener('DOMContentLoaded', async () => {
+			await _loadPage(1);
 
-            function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
-            function randomSuffix(len = 6) { return Math.random().toString(36).slice(2, 2 + len) || uid().slice(-len); }
-            function randomPastDate(maxDays = 60) {
-                const days = Math.floor(Math.random() * maxDays) + 1;
-                const hours = Math.floor(Math.random() * 24);
-                const minutes = Math.floor(Math.random() * 60);
-                const seconds = Math.floor(Math.random() * 60);
-                const ms = (((days * 24) + hours) * 3600 + minutes * 60 + seconds) * 1000;
-                return new Date(Date.now() - ms).toISOString();
-            }
+			const dataString = sessionStorage.getItem('currentCourse');
+			if (!dataString) {
+				document.querySelector('main').innerHTML = '<div class="p-6 bg-white rounded shadow text-center text-red-500">找不到課程資料。請返回列表頁重試。</div>';
+				return;
+			}
 
-            function getViewerName() {
-                const re = /^user [0-9a-z]{6}$/i;
-                let v = localStorage.getItem(VIEWER_KEY);
-                if (v && re.test(v)) return v;
-                const newV = 'user ' + randomSuffix(6);
-                localStorage.setItem(VIEWER_KEY, newV);
-                return newV;
-            }
+			courseData = JSON.parse(dataString);
 
-            function resetViewerName() {
-                const newV = 'user ' + randomSuffix(6);
-                localStorage.setItem(VIEWER_KEY, newV);
-                return newV;
-            }
+			// --- Data Patch for all courses ---
+			const patchData = {
+				c_assessment: "完成導師指定作業",
+				e_assessment: "Complete assignments designated by the instructor",
+				c_target: "對手語有興趣或有意增加手語認識之人士，特別是有意聘請聽障人士的企業、主管級及機構相關的人士。",
+				e_target: "Individuals interested in sign language or wishing to increase their knowledge of it, especially enterprises, supervisors, and relevant personnel in organizations intending to hire hearing-impaired individuals.",
+				c_prerequisite: "已完成AT345.1手語初階(一級)",
+				e_prerequisite: "Completed AT345.1 Sign Language Elementary (Level 1)",
+				c_tutor: "澳門聾人協會導師",
+				e_tutor: "Instructor from the Macau Deaf Association",
+				c_language: "廣東話及澳門手語",
+				e_language: "Cantonese and Macau Sign Language",
+				c_handout: "中文講義 (繁體)",
+				e_handout: "Handouts in Chinese (Traditional)",
+				c_duration: "12小時8節",
+				e_duration: "12 hours in 8 sessions",
+				c_schedule: "19:30-21:00，由2025-12-2至2026-1-8內的每個星期二、星期四，除了2025-12-23（星期二）、2025-12-25（星期四）、2025-12-30（星期二）、2026-1-1（星期四）。",
+				e_schedule: "19:30-21:00, every Tuesday and Thursday from 2025-12-2 to 2026-1-8, excluding 2025-12-23 (Tue), 2025-12-25 (Thu), 2025-12-30 (Tue), 2026-1-1 (Thu).",
+				c_venue: "時尚匯點 (澳門漁翁街海洋工業中心第二期十樓)",
+				e_venue: "House of Apparel (10/F, Ocean Industrial Centre, Phase II, Rua dos Pescadores, Macau)",
+				c_certificate: "澳門聾人協會及生產力中心簽發的修業/優異證書 (出席率最少達百分之八十及各項評核合格)。",
+				e_certificate: "Certificate of Completion/Distinction issued by the Macau Deaf Association and CPTTM (requires at least 80% attendance and passing all assessments).",
+				c_remark: `獲特區政府"持續進修發展計劃"批准課程，編號2504160435-0`,
+				e_remark: `Approved course under the "Continuing Education Development Program" of the SAR Government, code 2504160435-0`
+			};
+			Object.assign(courseData, patchData);
+			// --- End Data Patch ---
 
-            function safeText(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-            function loadMessages() { const raw = localStorage.getItem(STORAGE_KEY); try { return raw ? JSON.parse(raw) : []; } catch (e) { console.error('Failed to parse messages', e); return []; } }
-            function saveMessages(msgs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs)); }
+			// Set initial language and render content
+			setLanguage(currentLang);
 
-            function seedFromDataJsonIfEmpty() {
-                const existing = loadMessages();
-                if (existing && existing.length) return;
-                const prepared = EMBEDDED_SEED.map(d => ({ id: d.id || uid(), name: 'user ' + randomSuffix(6), text: d.text || '', createdAt: randomPastDate(90) }));
-                saveMessages(prepared);
-            }
+			// Setup zoomable images
+			if (window.setupZoomableImages) {
+				setupZoomableImages();
+			}
 
-            function renderMessages() {
-                const container = document.getElementById('messages');
-                if (!container) return;
-                container.innerHTML = '';
-                const viewer = getViewerName();
-                const msgs = loadMessages().slice().reverse();
-                const trans = translations[currentLang];
+			// Favorite button logic
+			const favBtns = [document.getElementById('favBtn'), document.getElementById('favBtnMobile')];
+			if (favBtns.length > 0) {
+				const COURSE_KEY = 'fav_courses';
+				const courseCode = courseData.course_code;
 
-                if (msgs.length === 0) { container.innerHTML = `<div class="text-slate-500">${trans.noMessages}</div>`; return; }
-                
-                msgs.forEach(m => {
-                    const el = document.createElement('article');
-                    el.className = 'bg-white p-4 rounded shadow';
-                    el.innerHTML = `
+				const getFavs = () => JSON.parse(localStorage.getItem(COURSE_KEY) || '[]');
+				const saveFavs = (arr) => localStorage.setItem(COURSE_KEY, JSON.stringify(arr));
+
+				const isFav = () => getFavs().includes(courseCode);
+
+				const updateFavUI = () => {
+					const pressed = isFav();
+					favBtns.forEach(btn => {
+						if (!btn) return;
+						const heart = btn.querySelector('.heart');
+						btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+						if (heart) heart.textContent = pressed ? '❤' : '♡';
+					});
+				};
+
+				favBtns.forEach(btn => {
+					if (!btn) return;
+					btn.addEventListener('click', (e) => {
+						e.preventDefault();
+						if (!courseCode) return;
+						const arr = getFavs();
+						const idx = arr.indexOf(courseCode);
+						if (idx >= 0) {
+							arr.splice(idx, 1);
+						} else {
+							arr.push(courseCode);
+						}
+						saveFavs(arr);
+						updateFavUI();
+					});
+				});
+
+				updateFavUI();
+			}
+
+			// Registration button logic
+			const regBtns = [document.getElementById('registerBtnDesktop'), document.getElementById('registerBtnMobile')];
+			regBtns.forEach(btn => {
+				if (!btn) return;
+				btn.addEventListener('click', (e) => {
+					e.preventDefault();
+					if (courseData) {
+						sessionStorage.setItem('courseToRegister', JSON.stringify(courseData));
+						window.location.href = 'register.html';
+					} else {
+						alert(translations[currentLang].cannotGetCourseData || 'Cannot get course data for registration.');
+					}
+				});
+			});
+		});
+
+		// --- Message Board Logic ---
+		document.addEventListener('DOMContentLoaded', () => {
+			const STORAGE_KEY = 'simple_message_board_v1';
+			const VIEWER_KEY = 'simple_message_board_viewer';
+
+			const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='%23cbd5e1'><rect width='24' height='24' rx='12' fill='%23e2e8f0'/%3E<path d='M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z' fill='%2399aabb'/%3E</svg>";
+			const EMBEDDED_SEED = [
+				{ id: 'seed-1', text: '歡迎來訪！' },
+				{ id: 'seed-2', text: '想問一下這個課程的大概內容。' },
+				{ id: 'seed-3', text: '有人可以告訴我這個課程值這個價錢嗎？' },
+				{ id: 'seed-4', text: '這個網站新的功能大家覺得怎麼樣？' },
+				{ id: 'seed-5', text: '得不錯！' },
+				{ id: 'seed-6', text: '我有一個建議：可以加上搜尋功能。' },
+				{ id: 'seed-7', text: '感謝分享，我學到了很多。' },
+				{ id: 'seed-8', text: '手機瀏覽器的樣式是否正常？' },
+				{ id: 'seed-9', text: '我剛加入這個留言板，大家好！' },
+				{ id: 'seed-10', text: '我覺得這個價錢就能上到這課簡直就是賺了。' }
+			];
+
+			function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+			function randomSuffix(len = 6) { return Math.random().toString(36).slice(2, 2 + len) || uid().slice(-len); }
+			function randomPastDate(maxDays = 60) {
+				const days = Math.floor(Math.random() * maxDays) + 1;
+				const hours = Math.floor(Math.random() * 24);
+				const minutes = Math.floor(Math.random() * 60);
+				const seconds = Math.floor(Math.random() * 60);
+				const ms = (((days * 24) + hours) * 3600 + minutes * 60 + seconds) * 1000;
+				return new Date(Date.now() - ms).toISOString();
+			}
+
+			function getViewerName() {
+				const re = /^user [0-9a-z]{6}$/i;
+				let v = localStorage.getItem(VIEWER_KEY);
+				if (v && re.test(v)) return v;
+				const newV = 'user ' + randomSuffix(6);
+				localStorage.setItem(VIEWER_KEY, newV);
+				return newV;
+			}
+
+			function resetViewerName() {
+				const newV = 'user ' + randomSuffix(6);
+				localStorage.setItem(VIEWER_KEY, newV);
+				return newV;
+			}
+
+			function safeText(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+			function loadMessages() { const raw = localStorage.getItem(STORAGE_KEY); try { return raw ? JSON.parse(raw) : []; } catch (e) { console.error('Failed to parse messages', e); return []; } }
+			function saveMessages(msgs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs)); }
+
+			function seedFromDataJsonIfEmpty() {
+				const existing = loadMessages();
+				if (existing && existing.length) return;
+				const prepared = EMBEDDED_SEED.map(d => ({ id: d.id || uid(), name: 'user ' + randomSuffix(6), text: d.text || '', createdAt: randomPastDate(90) }));
+				saveMessages(prepared);
+			}
+
+			function renderMessages() {
+				const container = document.getElementById('messages');
+				if (!container) return;
+				container.innerHTML = '';
+				const viewer = getViewerName();
+				const msgs = loadMessages().slice().reverse();
+				const trans = translations[currentLang];
+
+				if (msgs.length === 0) { container.innerHTML = `<div class="text-slate-500">${trans.noMessages}</div>`; return; }
+
+				msgs.forEach(m => {
+					const el = document.createElement('article');
+					el.className = 'bg-white p-4 rounded shadow';
+					el.innerHTML = `
                         <div class="flex justify-between items-start">
                             <div>
                                 <div class="text-sm text-slate-700 author-row"><span class="avatar"><img src="https://cdn-icons-png.flaticon.com/128/3177/3177440.png" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}';" alt="avatar"/></span><span class="author-name"><strong>${safeText(m.name)}</strong></span></div>
@@ -659,100 +777,101 @@
                                 ${m.name === viewer ? `<button data-id="${m.id}" class="edit-btn text-sky-600 hover:underline">${trans.edit}</button><button data-id="${m.id}" class="delete-btn text-red-600 hover:underline">${trans.delete}</button>` : ''}
                             </div>
                         </div>
-                        <div class="mt-2 text-slate-800 break-words message-text" data-id="${m.id}">${safeText(m.text).replace(/\n/g,'<br>')}</div>
+                        <div class="mt-2 text-slate-800 break-words message-text" data-id="${m.id}">${safeText(m.text).replace(/\n/g, '<br>')}</div>
                     `;
-                    container.appendChild(el);
-                });
-                container.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', (e) => deleteMessage(e.currentTarget.getAttribute('data-id'))));
-                container.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', (e) => openInlineEditor(e.currentTarget.getAttribute('data-id'))));
-            }
+					container.appendChild(el);
+				});
+				container.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', (e) => deleteMessage(e.currentTarget.getAttribute('data-id'))));
+				container.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', (e) => openInlineEditor(e.currentTarget.getAttribute('data-id'))));
+			}
 
-            function addMessage(name, text) {
-                const msgs = loadMessages();
-                const id = uid();
-                const finalName = (name && name.trim()) ? name.trim() : getViewerName();
-                msgs.push({ id, name: finalName, text: (text || '').trim(), createdAt: new Date().toISOString() });
-                saveMessages(msgs);
-                renderMessages();
-            }
+			function addMessage(name, text) {
+				const msgs = loadMessages();
+				const id = uid();
+				const finalName = (name && name.trim()) ? name.trim() : getViewerName();
+				msgs.push({ id, name: finalName, text: (text || '').trim(), createdAt: new Date().toISOString() });
+				saveMessages(msgs);
+				renderMessages();
+			}
 
-            function deleteMessage(id) { 
-                if (!confirm(translations[currentLang].confirmDelete)) return; 
-                const msgs = loadMessages(); 
-                const idx = msgs.findIndex(m => m.id === id); 
-                if (idx === -1) return; 
-                msgs.splice(idx,1); 
-                saveMessages(msgs); 
-                renderMessages(); 
-            }
+			function deleteMessage(id) {
+				if (!confirm(translations[currentLang].confirmDelete)) return;
+				const msgs = loadMessages();
+				const idx = msgs.findIndex(m => m.id === id);
+				if (idx === -1) return;
+				msgs.splice(idx, 1);
+				saveMessages(msgs);
+				renderMessages();
+			}
 
-            function openInlineEditor(id) {
-                const container = document.getElementById('messages');
-                const msgTextEl = container.querySelector(`.message-text[data-id="${id}"]`);
-                if (!msgTextEl) return;
-                const msgsAll = loadMessages();
-                const target = msgsAll.find(m => m.id === id);
-                const viewer = getViewerName();
-                const trans = translations[currentLang];
-                if (!target) return;
-                if (target.name !== viewer) { alert(trans.editOwnMessage); return; }
-                if (msgTextEl.dataset.editing === 'true') return; msgTextEl.dataset.editing = 'true';
+			function openInlineEditor(id) {
+				const container = document.getElementById('messages');
+				const msgTextEl = container.querySelector(`.message-text[data-id="${id}"]`);
+				if (!msgTextEl) return;
+				const msgsAll = loadMessages();
+				const target = msgsAll.find(m => m.id === id);
+				const viewer = getViewerName();
+				const trans = translations[currentLang];
+				if (!target) return;
+				if (target.name !== viewer) { alert(trans.editOwnMessage); return; }
+				if (msgTextEl.dataset.editing === 'true') return; msgTextEl.dataset.editing = 'true';
 
-                const origText = target.text;
-                const editorWrap = document.createElement('div'); editorWrap.className = 'mt-2 flex items-start gap-2';
-                const textarea = document.createElement('textarea'); textarea.className = 'flex-1 mt-0 block w-full rounded border-slate-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 p-2'; textarea.rows = 4; textarea.value = origText;
-                const doneBtn = document.createElement('button'); doneBtn.type = 'button'; doneBtn.className = 'ml-2 inline-flex items-center px-3 py-2 bg-sky-600 text-white rounded hover:bg-sky-700'; doneBtn.textContent = trans.done;
-                editorWrap.appendChild(textarea); editorWrap.appendChild(doneBtn); msgTextEl.replaceWith(editorWrap);
-                textarea.focus(); textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+				const origText = target.text;
+				const editorWrap = document.createElement('div'); editorWrap.className = 'mt-2 flex items-start gap-2';
+				const textarea = document.createElement('textarea'); textarea.className = 'flex-1 mt-0 block w-full rounded border-slate-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 p-2'; textarea.rows = 4; textarea.value = origText;
+				const doneBtn = document.createElement('button'); doneBtn.type = 'button'; doneBtn.className = 'ml-2 inline-flex items-center px-3 py-2 bg-sky-600 text-white rounded hover:bg-sky-700'; doneBtn.textContent = trans.done;
+				editorWrap.appendChild(textarea); editorWrap.appendChild(doneBtn); msgTextEl.replaceWith(editorWrap);
+				textarea.focus(); textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
 
-                function closeEditor(save) {
-                    if (save) {
-                        const newText = textarea.value.trim();
-                        if (!newText) { alert(trans.messageEmpty); textarea.focus(); return; }
-                        const msgs = loadMessages();
-                        const idx = msgs.findIndex(m => m.id === id);
-                        if (idx === -1) { alert('Error: Message not found.'); renderMessages(); return; }
-                        msgs[idx].text = newText; saveMessages(msgs); renderMessages();
-                    } else {
-                        renderMessages();
-                    }
-                }
+				function closeEditor(save) {
+					if (save) {
+						const newText = textarea.value.trim();
+						if (!newText) { alert(trans.messageEmpty); textarea.focus(); return; }
+						const msgs = loadMessages();
+						const idx = msgs.findIndex(m => m.id === id);
+						if (idx === -1) { alert('Error: Message not found.'); renderMessages(); return; }
+						msgs[idx].text = newText; saveMessages(msgs); renderMessages();
+					} else {
+						renderMessages();
+					}
+				}
 
-                doneBtn.addEventListener('click', () => closeEditor(true));
-                textarea.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); closeEditor(true); } if (e.key === 'Escape') { e.preventDefault(); closeEditor(false); } });
-            }
+				doneBtn.addEventListener('click', () => closeEditor(true));
+				textarea.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); closeEditor(true); } if (e.key === 'Escape') { e.preventDefault(); closeEditor(false); } });
+			}
 
-            seedFromDataJsonIfEmpty();
-            resetViewerName();
-            renderMessages();
+			seedFromDataJsonIfEmpty();
+			resetViewerName();
+			renderMessages();
 
-            const form = document.getElementById('message-form');
-            const messageInput = document.getElementById('message');
-            const formError = document.getElementById('form-error');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const message = (messageInput && messageInput.value) || '';
-                    if (!message.trim()) {
-                        const msg = translations[currentLang].messageEmpty;
-                        if (formError) formError.textContent = msg;
-                        alert(msg);
-                        if (messageInput) messageInput.focus();
-                        return;
-                    }
-                    if (formError) formError.textContent = '';
-                    addMessage('', message);
-                    form.reset();
-                });
-            }
-            
-            // Re-render messages on language change
-            const originalSetLanguage = window.setLanguage;
-            window.setLanguage = function(lang) {
-                originalSetLanguage(lang);
-                renderMessages();
-            };
-        });
-    </script>
+			const form = document.getElementById('message-form');
+			const messageInput = document.getElementById('message');
+			const formError = document.getElementById('form-error');
+			if (form) {
+				form.addEventListener('submit', (e) => {
+					e.preventDefault();
+					const message = (messageInput && messageInput.value) || '';
+					if (!message.trim()) {
+						const msg = translations[currentLang].messageEmpty;
+						if (formError) formError.textContent = msg;
+						alert(msg);
+						if (messageInput) messageInput.focus();
+						return;
+					}
+					if (formError) formError.textContent = '';
+					addMessage('', message);
+					form.reset();
+				});
+			}
+
+			// Re-render messages on language change
+			const originalSetLanguage = window.setLanguage;
+			window.setLanguage = function (lang) {
+				originalSetLanguage(lang);
+				renderMessages();
+			};
+		});
+	</script>
 </body>
+
 </html>
