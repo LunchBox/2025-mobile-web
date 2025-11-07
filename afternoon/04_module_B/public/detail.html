@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="課程詳情 - 澳門生產力暨科技轉移中心，顯示課程資訊與報名方式。">
+    <title>課程詳情 - 澳門生產力暨科技轉移中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .detail-content {
+            color: #4B5563;
+            line-height: 1.6;
+        }
+        .favorite-btn {
+            transition: all 0.3s ease;
+        }
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+        .favorite-btn.active {
+            color: #EF4444;
+        }
+        @media (max-width: 639px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (min-width: 640px) and (max-width: 1023px) {
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (min-width: 1024px) {
+            .detail-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+            .sticky-sidebar {
+                position: sticky;
+                top: 6rem;
+                align-self: start;
+            }
+        }
+        .info-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app" v-cloak>
+        <!-- Loading State -->
+        <div v-if="loading" class="min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p class="text-gray-600">{{ lang[currentLang].loading }}</p>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="error" class="min-h-screen flex items-center justify-center p-4">
+            <div class="text-center max-w-md">
+                <div class="text-red-500 text-6xl mb-4">⚠️</div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ lang[currentLang].errorTitle }}</h1>
+                <p class="text-gray-600 mb-6">{{ error }}</p>
+                <a href="index.html" class="inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                    {{ lang[currentLang].backToList }}
+                </a>
+            </div>
+        </div>
+
+        <!-- Course Detail Content -->
+        <div v-else-if="course">
+            <!-- Header -->
+            <header class="bg-gradient-to-r from-orange-50 to-orange-100 py-4 px-4 shadow-sm sticky top-0 z-10">
+                <div class="max-w-7xl mx-auto flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <a href="index.html" class="text-gray-600 hover:text-orange-500 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
+                        </a>
+                        <h1 class="text-xl md:text-2xl font-bold text-gray-800">{{ lang[currentLang].courseDetail }}</h1>
+                    </div>
+                    <button 
+                        @click="toggleLanguage" 
+                        class="px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-sm font-medium">
+                        {{ currentLang === 'zh' ? 'En' : '中' }}
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="max-w-7xl mx-auto px-4 py-8 pb-24 md:pb-8">
+                <!-- Course Image and Basic Info -->
+                <div class="detail-grid grid gap-6 mb-8">
+                    <!-- Left Column - Main Info -->
+                    <div>
+                        <!-- Course Image -->
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
+                            <img 
+                                :src="getCourseImage(course)" 
+                                :alt="getCourseName(course)"
+                                class="w-full h-64 md:h-96 object-cover"
+                                @error="handleImageError">
+                        </div>
+
+                        <!-- Course Title and Code -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex-1">
+                                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                                        {{ getCourseName(course) }}
+                                    </h2>
+                                    <p class="text-gray-500">
+                                        {{ lang[currentLang].courseCode }}: <span class="font-semibold text-orange-600">{{ course.course_code }}</span>
+                                    </p>
+                                </div>
+                                <button 
+                                    @click="toggleFavorite"
+                                    :class="{'active': isFavorite}"
+                                    class="favorite-btn text-3xl ml-4"
+                                    :title="lang[currentLang].favorite">
+                                    {{ isFavorite ? '❤️' : '🤍' }}
+                                </button>
+                            </div>
+                            
+                            <!-- Price and Seats -->
+                            <div class="flex flex-wrap gap-4 pt-4 border-t">
+                                <div class="flex-1 min-w-[200px]">
+                                    <p class="text-sm text-gray-500 mb-1">{{ lang[currentLang].fee }}</p>
+                                    <p class="text-2xl font-bold text-red-600">
+                                        {{ getCoursePrice(course) }}
+                                    </p>
+                                </div>
+                                <div class="flex-1 min-w-[200px]">
+                                    <p class="text-sm text-gray-500 mb-1">{{ lang[currentLang].seats }}</p>
+                                    <p class="text-xl font-semibold text-gray-800">
+                                        {{ course.size || lang[currentLang].notAvailable }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Objective -->
+                        <div v-if="getCourseObjective(course)" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="detail-label text-xl mb-3 flex items-center">
+                                <span class="text-orange-500 mr-2">🎯</span>
+                                {{ lang[currentLang].objective }}
+                            </h3>
+                            <div class="detail-content" v-html="getCourseObjective(course)"></div>
+                        </div>
+
+                        <!-- Course Content -->
+                        <div v-if="getCourseContent(course)" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="detail-label text-xl mb-3 flex items-center">
+                                <span class="text-orange-500 mr-2">📚</span>
+                                {{ lang[currentLang].content }}
+                            </h3>
+                            <div class="detail-content" v-html="getCourseContent(course)"></div>
+                        </div>
+
+                        <!-- Assessment Method -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="detail-label text-xl mb-3 flex items-center">
+                                <span class="text-orange-500 mr-2">✍️</span>
+                                {{ lang[currentLang].assessment }}
+                            </h3>
+                            <p class="detail-content">{{ lang[currentLang].assessmentDefault }}</p>
+                        </div>
+
+                        <!-- Target Audience -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="detail-label text-xl mb-3 flex items-center">
+                                <span class="text-orange-500 mr-2">👥</span>
+                                {{ lang[currentLang].targetAudience }}
+                            </h3>
+                            <p class="detail-content">{{ lang[currentLang].targetAudienceDefault }}</p>
+                        </div>
+
+                        <!-- Prerequisites -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="detail-label text-xl mb-3 flex items-center">
+                                <span class="text-orange-500 mr-2">📋</span>
+                                {{ lang[currentLang].prerequisites }}
+                            </h3>
+                            <p class="detail-content">{{ lang[currentLang].prerequisitesDefault }}</p>
+                        </div>
+
+                        <!-- Remarks -->
+                        <div v-if="getCourseRemark(course)" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="detail-label text-xl mb-3 flex items-center">
+                                <span class="text-orange-500 mr-2">📌</span>
+                                {{ lang[currentLang].remark }}
+                            </h3>
+                            <div class="detail-content" v-html="getCourseRemark(course)"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Sidebar Info -->
+                    <div class="sticky-sidebar">
+                        <!-- Quick Info Card -->
+                        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4 pb-3 border-b-2 border-orange-500">
+                                {{ lang[currentLang].courseInfo }}
+                            </h3>
+                            
+                            <!-- Course Code -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].courseCode }}</p>
+                                <p class="detail-content text-sm font-semibold text-orange-600">{{ course.course_code }}</p>
+                            </div>
+
+                            <!-- Course Name -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].courseName }}</p>
+                                <p class="detail-content text-sm">{{ getCourseName(course) }}</p>
+                            </div>
+
+                            <!-- Schedule / Detailed Timetable -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].detailedSchedule }}</p>
+                                <p class="detail-content text-sm">
+                                    {{ course.start_date }} {{ lang[currentLang].to }} {{ course.end_date }}
+                                </p>
+                            </div>
+
+                            <!-- Duration / Course Hours -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].courseHours }}</p>
+                                <p class="detail-content text-sm">{{ calculateDuration(course.start_date, course.end_date) }}</p>
+                            </div>
+
+                            <!-- Fee -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].fee }}</p>
+                                <p class="detail-content text-sm font-bold text-red-600">{{ getCoursePrice(course) }}</p>
+                            </div>
+
+                            <!-- Seats -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].seats }}</p>
+                                <p class="detail-content text-sm font-semibold">{{ course.size || lang[currentLang].notAvailable }}</p>
+                            </div>
+
+                            <!-- Teaching Language -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].teachingLanguage }}</p>
+                                <p class="detail-content text-sm">{{ lang[currentLang].teachingLanguageDefault }}</p>
+                            </div>
+
+                            <!-- Material Language -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].materialLanguage }}</p>
+                                <p class="detail-content text-sm">{{ lang[currentLang].materialLanguageDefault }}</p>
+                            </div>
+
+                            <!-- Location -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].location }}</p>
+                                <p class="detail-content text-sm">{{ lang[currentLang].locationDefault }}</p>
+                            </div>
+
+                            <!-- Certificate -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].certificate }}</p>
+                                <p class="detail-content text-sm">{{ lang[currentLang].certificateDefault }}</p>
+                            </div>
+
+                            <!-- Instructor -->
+                            <div class="info-item">
+                                <p class="detail-label text-sm">{{ lang[currentLang].instructor }}</p>
+                                <p class="detail-content text-sm">{{ lang[currentLang].instructorDefault }}</p>
+                            </div>
+
+                            </div>
+
+                        <!-- Related Courses (Extra Feature) -->
+                        <div v-if="relatedCourses.length > 0" class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                                <span class="text-orange-500 mr-2">🔗</span>
+                                {{ lang[currentLang].relatedCourses }}
+                            </h3>
+                            <div class="space-y-4">
+                                <a 
+                                    v-for="related in relatedCourses" 
+                                    :key="related.course_code"
+                                    :href="'detail.html?id=' + related.course_code"
+                                    class="block p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:shadow-md transition-all">
+                                    <h4 class="font-semibold text-gray-800 mb-2 line-clamp-2">
+                                        {{ currentLang === 'zh' ? related.c_title : related.e_title }}
+                                    </h4>
+                                    <p class="text-sm text-gray-500 mb-2">{{ related.course_code }}</p>
+                                    <p class="text-red-600 font-semibold">
+                                        {{ related.fees && related.fees[0] ? 'MOP ' + related.fees[0].fee : 'N/A' }}
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trial Listen Section (Glassmorphism) -->
+                <section id="trial-listen" class="glass-card mt-8 p-6 md:p-8">
+                    <div class="flex items-start justify-between gap-4 mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">預約試聽</h2>
+                            <p class="text-gray-600">想親自體驗課程內容？請填寫下列表單，預約免費試聽時段，我們將會盡快與您聯繫。</p>
+                        </div>
+                        <div class="hidden md:flex items-center gap-3">
+                            <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/40 text-orange-500 text-xl">🎧</span>
+                        </div>
+                    </div>
+
+                    <form id="trialForm" @submit.prevent="handleTrialSubmit" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="name" class="form-label block mb-1">姓名 <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" required aria-required="true" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-150">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label block mb-1">聯絡電話 <span class="text-red-500">*</span></label>
+                            <input type="tel" id="phone" name="phone" required aria-required="true" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-150">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label block mb-1">電子郵件</label>
+                            <input type="email" id="email" name="email" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-150">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date" class="form-label block mb-1">試聽日期 <span class="text-red-500">*</span></label>
+                            <input type="date" id="date" name="date" required aria-required="true" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition duration-150">
+                        </div>
+
+                        <div class="md:col-span-2 flex items-center justify-between gap-4 mt-2">
+                            <div class="text-sm text-gray-500">提交後我們會在兩個工作天內與您聯絡以確認時間。</div>
+                            <button type="submit" class="w-full md:w-auto py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 transition duration-150">提交預約</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- 課程詳情將由 JavaScript 動態載入 -->
+                <div id="course-details"></div>
+            </main>
+
+            <!-- Floating Enroll Now Button -->
+            <div class="fixed inset-x-0 bottom-0 z-40 p-4 md:inset-x-auto md:right-6 md:bottom-6 md:p-0">
+                <button
+                    @click="startEnrollment"
+                    class="w-full md:w-auto px-6 py-3 rounded-full shadow-lg bg-orange-500 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    :aria-label="lang[currentLang].enrollNow"
+                    :title="lang[currentLang].enrollNow"
+                >
+                    {{ lang[currentLang].enrollNow }}
+                </button>
+            </div>
+
+            <!-- Enrollment Modal (reuse from index.html) -->
+            <div v-if="showEnrollment" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <!-- Step Indicator -->
+                        <div class="flex justify-between mb-6">
+                            <div v-for="step in 3" :key="step" class="flex-1">
+                                <div :class="enrollmentStep >= step ? 'bg-orange-500' : 'bg-gray-300'" class="h-2 rounded"></div>
+                                <p :class="enrollmentStep >= step ? 'text-orange-500' : 'text-gray-400'" class="text-xs mt-1 text-center">
+                                    {{ lang[currentLang]['step' + step] }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step 1: Select Course -->
+                        <div v-if="enrollmentStep === 1">
+                            <h2 class="text-xl font-bold mb-4">{{ lang[currentLang].step1 }}</h2>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h3 class="font-semibold">{{ getCourseName(course) }}</h3>
+                                <p class="text-sm text-gray-600 mt-2">{{ lang[currentLang].courseCode }}: {{ course.course_code }}</p>
+                                <p class="text-red-600 font-semibold mt-2">{{ getCoursePrice(course) }}</p>
+                            </div>
+                            <div class="flex gap-4 mt-6">
+                                <button @click="closeEnrollment" class="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                    {{ lang[currentLang].cancel }}
+                                </button>
+                                <button @click="enrollmentStep = 2" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                    {{ lang[currentLang].next }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Fill Form -->
+                        <div v-if="enrollmentStep === 2">
+                            <h2 class="text-xl font-bold mb-4">{{ lang[currentLang].step2 }}</h2>
+                            <form @submit.prevent="validateForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        {{ lang[currentLang].name }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        v-model="formData.name"
+                                        type="text" 
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                        :class="errors.name ? 'border-red-500' : 'border-gray-300'">
+                                    <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        {{ lang[currentLang].gender }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center">
+                                            <input v-model="formData.gender" type="radio" value="male" class="mr-2">
+                                            {{ lang[currentLang].male }}
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input v-model="formData.gender" type="radio" value="female" class="mr-2">
+                                            {{ lang[currentLang].female }}
+                                        </label>
+                                    </div>
+                                    <p v-if="errors.gender" class="text-red-500 text-sm mt-1">{{ errors.gender }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        {{ lang[currentLang].birthDate }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        v-model="formData.birthDate"
+                                        type="date" 
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                        :class="errors.birthDate ? 'border-red-500' : 'border-gray-300'">
+                                    <p v-if="errors.birthDate" class="text-red-500 text-sm mt-1">{{ errors.birthDate }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        {{ lang[currentLang].phone }} <span class="text-red-500">*</span>
+                                    </label>
+                                    <input 
+                                        v-model="formData.phone"
+                                        type="tel" 
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                        :class="errors.phone ? 'border-red-500' : 'border-gray-300'">
+                                    <p v-if="errors.phone" class="text-red-500 text-sm mt-1">{{ errors.phone }}</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">{{ lang[currentLang].email }}</label>
+                                    <input 
+                                        v-model="formData.email"
+                                        type="email" 
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                                </div>
+
+                                <div class="flex gap-4 mt-6">
+                                    <button type="button" @click="enrollmentStep = 1" class="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                        {{ lang[currentLang].back }}
+                                    </button>
+                                    <button type="submit" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                        {{ lang[currentLang].next }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Step 3: Confirm -->
+                        <div v-if="enrollmentStep === 3">
+                            <h2 class="text-xl font-bold mb-4">{{ lang[currentLang].step3 }}</h2>
+                            <div class="space-y-3 bg-gray-50 p-4 rounded-lg">
+                                <div>
+                                    <span class="font-medium">{{ lang[currentLang].courseName }}:</span>
+                                    <span class="ml-2">{{ getCourseName(course) }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium">{{ lang[currentLang].name }}:</span>
+                                    <span class="ml-2">{{ formData.name }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium">{{ lang[currentLang].gender }}:</span>
+                                    <span class="ml-2">{{ formData.gender === 'male' ? lang[currentLang].male : lang[currentLang].female }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium">{{ lang[currentLang].birthDate }}:</span>
+                                    <span class="ml-2">{{ formData.birthDate }}</span>
+                                </div>
+                                <div>
+                                    <span class="font-medium">{{ lang[currentLang].phone }}:</span>
+                                    <span class="ml-2">{{ formData.phone }}</span>
+                                </div>
+                                <div v-if="formData.email">
+                                    <span class="font-medium">{{ lang[currentLang].email }}:</span>
+                                    <span class="ml-2">{{ formData.email }}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-6">
+                                <button @click="enrollmentStep = 2" class="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                    {{ lang[currentLang].back }}
+                                </button>
+                                <button @click="submitEnrollment" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                    {{ lang[currentLang].submit }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Modal -->
+            <div v-if="showSuccess" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-lg p-8 max-w-md text-center">
+                    <div class="text-green-500 text-6xl mb-4">✓</div>
+                    <h2 class="text-2xl font-bold mb-2">{{ lang[currentLang].successTitle }}</h2>
+                    <p class="text-gray-600 mb-6">{{ lang[currentLang].successMessage }}</p>
+                    <button 
+                        @click="closeSuccess"
+                        class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                        {{ lang[currentLang].close }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="detail.js"></script>
+</body>
+</html>

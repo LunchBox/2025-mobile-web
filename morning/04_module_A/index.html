@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課程列表 - 澳門生產力暨科技轉移中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app" v-cloak>
+        <!-- Header -->
+        <header class="site-header bg-gradient-to-r from-orange-50 to-orange-100 py-4 px-4 shadow-sm">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 class="text-2xl font-bold text-gray-800">{{ lang[currentLang].title }}</h1>
+                    <button 
+                        @click="toggleLanguage" 
+                        class="px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-sm font-medium">
+                        {{ currentLang === 'zh' ? 'En' : '中' }}
+                    </button>
+                </div>
+                <p class="text-gray-600">{{ lang[currentLang].subtitle }}</p>
+            </div>
+        </header>
+
+    <!-- Main Content -->
+    <main class="site-main max-w-7xl mx-auto px-4 py-8">
+            <!-- Control Bar -->
+            <div class="control-bar mb-6 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                <!-- View Toggle & Sort -->
+                <div class="flex gap-4 items-center">
+                    <!-- View Toggle -->
+                    <div class="flex gap-2">
+                        <button 
+                            @click="viewMode = 'grid'" 
+                            :class="viewMode === 'grid' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'"
+                            class="px-4 py-2 rounded-lg shadow hover:shadow-md transition-all">
+                            {{ lang[currentLang].gridView }}
+                        </button>
+                        <button 
+                            @click="viewMode = 'list'" 
+                            :class="viewMode === 'list' ? 'bg-orange-500 text-white' : 'bg-white text-gray-700'"
+                            class="px-4 py-2 rounded-lg shadow hover:shadow-md transition-all">
+                            {{ lang[currentLang].listView }}
+                        </button>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <select 
+                        v-model="sortBy" 
+                        @change="sortCourses"
+                        class="px-4 py-2 bg-white rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">{{ lang[currentLang].sortByDefault }}</option>
+                        <option value="date">{{ lang[currentLang].sortByDate }}</option>
+                        <option value="price">{{ lang[currentLang].sortByPrice }}</option>
+                    </select>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex gap-2 w-full md:w-96">
+                    <input 
+                        v-model="searchQuery"
+                        @input="filterCourses"
+                        type="text" 
+                        :placeholder="lang[currentLang].searchPlaceholder"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <button 
+                        @click="clearSearch"
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                        {{ lang[currentLang].clear }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Course Grid/List -->
+            <div v-if="displayedCourses.length > 0">
+                <!-- Grid View -->
+                <div v-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div 
+                        v-for="course in displayedCourses" 
+                        :key="course.id"
+                        @click="goToCourseDetail(course.id)"
+                        role="button"
+                        tabindex="0"
+                        class="course-card bg-white rounded-lg shadow hover:shadow-xl transition-shadow cursor-pointer overflow-hidden">
+                        <img 
+                            :src="getCourseImage(course)" 
+                            :alt="course.name"
+                            loading="lazy"
+                            decoding="async"
+                            @error="handleImageError"
+                            class="w-full h-48 object-cover">
+                        <div class="p-4">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2" v-html="highlightText(course.name)"></h3>
+                                <p class="text-sm text-gray-500 mb-2">{{ lang[currentLang].courseCode }}: <span class="text-gray-700" v-html="highlightText(course.id)"></span></p>
+                                <p class="text-red-600 font-semibold text-base mb-2"><span class="text-red-600">{{ course.price }}</span></p>
+                                <p class="text-sm text-gray-600">{{ lang[currentLang].startDate }}: <span class="text-gray-700">{{ course.startDate }}</span></p>
+                                <p class="text-sm text-gray-600">{{ lang[currentLang].seats }}: <span class="text-gray-700">{{ course.seats }}</span></p>
+                            <button 
+                                @click.stop="startEnrollment(course)"
+                                class="mt-4 w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors">
+                                {{ lang[currentLang].enroll }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div v-else class="space-y-4">
+                    <div 
+                        v-for="course in displayedCourses" 
+                        :key="course.id"
+                        @click="goToCourseDetail(course.id)"
+                        class="course-card bg-white rounded-lg shadow hover:shadow-xl transition-shadow cursor-pointer overflow-hidden flex">
+                        <img 
+                            :src="getCourseImage(course)" 
+                            :alt="course.name"
+                            loading="lazy"
+                            decoding="async"
+                            @error="handleImageError"
+                            class="w-48 h-40 object-cover">
+                        <div class="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2" v-html="highlightText(course.name)"></h3>
+                        <p class="text-sm text-gray-500 mb-2">{{ lang[currentLang].courseCode }}: <span class="text-gray-700" v-html="highlightText(course.id)"></span></p>
+                        <p class="text-red-600 font-semibold text-base mb-2"><span class="text-red-600">{{ course.price }}</span></p>
+                                <div class="flex gap-4">
+                                    <p class="text-sm text-gray-600">{{ lang[currentLang].startDate }}: <span class="text-gray-700">{{ course.startDate }}</span></p>
+                                    <p class="text-sm text-gray-600">{{ lang[currentLang].seats }}: <span class="text-gray-700">{{ course.seats }}</span></p>
+                                </div>
+                            </div>
+                            <button 
+                                @click.stop="startEnrollment(course)"
+                                class="mt-2 bg-orange-500 text-white py-2 px-6 rounded-lg hover:bg-orange-600 transition-colors self-start">
+                                {{ lang[currentLang].enroll }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-bar mt-8 flex justify-center items-center gap-4">
+                    <button 
+                        @click="prevPage"
+                        :disabled="currentPage === 1"
+                        :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'"
+                        class="px-6 py-2 bg-orange-500 text-white rounded-lg transition-colors">
+                        {{ lang[currentLang].prevPage }}
+                    </button>
+                    <span class="hidden md:inline text-gray-600">{{ currentPage }} / {{ totalPages }}</span>
+                    <button 
+                        @click="nextPage"
+                        class="px-6 py-2 bg-orange-500 text-white rounded-lg transition-colors hover:bg-orange-600">
+                        {{ lang[currentLang].nextPage }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- No Results -->
+            <div v-else class="text-center py-16">
+                <p class="text-gray-500 text-lg">{{ lang[currentLang].noResults }}</p>
+            </div>
+        </main>
+
+        <!-- Enrollment Modal -->
+        <div v-if="showEnrollment" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <!-- Step Indicator -->
+                    <div class="flex justify-between mb-6">
+                        <div v-for="step in 3" :key="step" class="flex-1">
+                            <div :class="enrollmentStep >= step ? 'bg-orange-500' : 'bg-gray-300'" class="h-2 rounded"></div>
+                            <p :class="enrollmentStep >= step ? 'text-orange-500' : 'text-gray-400'" class="text-xs mt-1 text-center">
+                                {{ lang[currentLang]['step' + step] }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Select Course -->
+                    <div v-if="enrollmentStep === 1">
+                        <h2 class="text-xl font-bold mb-4">{{ lang[currentLang].step1 }}</h2>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h3 class="font-semibold">{{ selectedCourse.name }}</h3>
+                            <p class="text-sm text-gray-600 mt-2">{{ lang[currentLang].courseCode }}: {{ selectedCourse.id }}</p>
+                            <p class="text-red-600 font-semibold mt-2">{{ selectedCourse.price }}</p>
+                        </div>
+                        <div class="flex gap-4 mt-6">
+                            <button @click="closeEnrollment" class="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                {{ lang[currentLang].cancel }}
+                            </button>
+                            <button @click="enrollmentStep = 2" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                {{ lang[currentLang].next }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Fill Form -->
+                    <div v-if="enrollmentStep === 2">
+                        <h2 class="text-xl font-bold mb-4">{{ lang[currentLang].step2 }}</h2>
+                        <form @submit.prevent="validateForm" class="space-y-4">
+                            <!-- Name -->
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    {{ lang[currentLang].name }} <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    v-model="formData.name"
+                                    type="text" 
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    :class="errors.name ? 'border-red-500' : 'border-gray-300'">
+                                <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
+                            </div>
+
+                            <!-- Gender -->
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    {{ lang[currentLang].gender }} <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center">
+                                        <input v-model="formData.gender" type="radio" value="male" class="mr-2">
+                                        {{ lang[currentLang].male }}
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input v-model="formData.gender" type="radio" value="female" class="mr-2">
+                                        {{ lang[currentLang].female }}
+                                    </label>
+                                </div>
+                                <p v-if="errors.gender" class="text-red-500 text-sm mt-1">{{ errors.gender }}</p>
+                            </div>
+
+                            <!-- Birth Date -->
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    {{ lang[currentLang].birthDate }} <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    v-model="formData.birthDate"
+                                    type="date" 
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    :class="errors.birthDate ? 'border-red-500' : 'border-gray-300'">
+                                <p v-if="errors.birthDate" class="text-red-500 text-sm mt-1">{{ errors.birthDate }}</p>
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    {{ lang[currentLang].phone }} <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    v-model="formData.phone"
+                                    type="tel" 
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    :class="errors.phone ? 'border-red-500' : 'border-gray-300'">
+                                <p v-if="errors.phone" class="text-red-500 text-sm mt-1">{{ errors.phone }}</p>
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-sm font-medium mb-1">{{ lang[currentLang].email }}</label>
+                                <input 
+                                    v-model="formData.email"
+                                    type="email" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+
+                            <div class="flex gap-4 mt-6">
+                                <button type="button" @click="enrollmentStep = 1" class="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                    {{ lang[currentLang].back }}
+                                </button>
+                                <button type="submit" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                    {{ lang[currentLang].next }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Step 3: Confirm -->
+                    <div v-if="enrollmentStep === 3">
+                        <h2 class="text-xl font-bold mb-4">{{ lang[currentLang].step3 }}</h2>
+                        <div class="space-y-3 bg-gray-50 p-4 rounded-lg">
+                            <div>
+                                <span class="font-medium">{{ lang[currentLang].courseName }}:</span>
+                                <span class="ml-2">{{ selectedCourse.name }}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium">{{ lang[currentLang].name }}:</span>
+                                <span class="ml-2">{{ formData.name }}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium">{{ lang[currentLang].gender }}:</span>
+                                <span class="ml-2">{{ formData.gender === 'male' ? lang[currentLang].male : lang[currentLang].female }}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium">{{ lang[currentLang].birthDate }}:</span>
+                                <span class="ml-2">{{ formData.birthDate }}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium">{{ lang[currentLang].phone }}:</span>
+                                <span class="ml-2">{{ formData.phone }}</span>
+                            </div>
+                            <div v-if="formData.email">
+                                <span class="font-medium">{{ lang[currentLang].email }}:</span>
+                                <span class="ml-2">{{ formData.email }}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 mt-6">
+                            <button @click="enrollmentStep = 2" class="flex-1 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                                {{ lang[currentLang].back }}
+                            </button>
+                            <button @click="submitEnrollment" class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                                {{ lang[currentLang].submit }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div v-if="showSuccess" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-lg p-8 max-w-md text-center">
+                <div class="text-green-500 text-6xl mb-4">✓</div>
+                <h2 class="text-2xl font-bold mb-2">{{ lang[currentLang].successTitle }}</h2>
+                <p class="text-gray-600 mb-6">{{ lang[currentLang].successMessage }}</p>
+                <button 
+                    @click="closeSuccess"
+                    class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+                    {{ lang[currentLang].close }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>Testing Data Load</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testLoad() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const resp = await fetch('data/page-1.json');
+                console.log('Response status:', resp.status, resp.ok);
+                
+                if (resp.ok) {
+                    const data = await resp.json();
+                    console.log('Data loaded:', data);
+                    console.log('Courses array:', data.courses);
+                    console.log('First course:', data.courses[0]);
+                    
+                    resultDiv.innerHTML = `
+                        <p>✅ Data loaded successfully!</p>
+                        <p>Total courses: ${data.courses ? data.courses.length : 0}</p>
+                        <p>First course title: ${data.courses && data.courses[0] ? data.courses[0].c_title : 'N/A'}</p>
+                        <pre>${JSON.stringify(data.courses[0], null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p>❌ Failed to load: ${resp.status}</p>`;
+                }
+            } catch (e) {
+                console.error('Error:', e);
+                resultDiv.innerHTML = `<p>❌ Error: ${e.message}</p>`;
+            }
+        }
+        
+        testLoad();
+    </script>
+</body>
+</html>

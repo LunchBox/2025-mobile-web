@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>三步驟報名系統</title>
+  <!-- Tailwind via CDN for quick prototype -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-900">
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="max-w-full sm:max-w-2xl lg:max-w-4xl mx-auto p-4 flex justify-end items-center gap-3">
+            <!-- Accessibility Dropdown -->
+            <div class="relative">
+                <details class="relative details-anim">
+                    <summary class="flex items-center gap-2 bg-white text-gray-700 p-2 rounded-md cursor-pointer list-none select-none border" aria-label="Accessibility Options">
+                        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                    </summary>
+                    <div class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
+                        <div class="p-4">
+                            <label for="highContrastToggle" class="flex items-center justify-between cursor-pointer">
+                                <span class="font-medium" data-lang="highContrast">高對比度</span>
+                                <div class="relative">
+                                    <input type="checkbox" id="highContrastToggle" class="sr-only" />
+                                    <div class="block bg-gray-200 w-10 h-6 rounded-full"></div>
+                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="border rounded-md px-2 py-2 flex items-center gap-2">
+              <label for="langToggle">
+                <img src="images/translate.png" alt="Language" class="w-5 h-5">
+              </label>
+              <button id="langToggle" class="text-sm">EN</button>
+            </div>
+        </div>
+    </header>
+
+  <main class="mx-auto bg-white p-4 sm:p-6 rounded-lg shadow mt-8 max-w-full sm:max-w-2xl lg:max-w-4xl">
+    <div>
+        <h2 class="text-lg font-semibold text-gray-600 mb-2" data-lang="enrollingIn">您正在報名</h2>
+        <div id="courseInfo" class="bg-white rounded-lg shadow-md overflow-hidden border flex flex-col sm:flex-row items-start gap-4 p-4">
+            <!-- Content will be injected by JS -->
+        </div>
+    </div>
+
+    <h1 class="text-xl sm:text-2xl lg:text-3xl font-semibold my-4 pt-4 border-t" data-lang="formTitle">兩步驟完成報名</h1>
+
+    <div id="steps">
+      <div class="step" data-step="1">
+        <h2 class="text-lg sm:text-xl lg:text-2xl font-bold" data-lang="step1Title">1. 填資料</h2>
+        <form id="dataForm" novalidate class="mt-3 space-y-4">
+          <label class="block">
+            <div class="flex items-center gap-1" data-lang="fieldName">姓名 <span class="text-red-500">*</span></div>
+            <input type="text" id="name" name="name" required autofocus class="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <div class="field-error text-red-600 text-sm mt-1 h-5" data-for="name"></div>
+          </label>
+
+          <div class="block">
+            <div class="flex items-center gap-1" data-lang="fieldGender">性別 <span class="text-red-500">*</span></div>
+            <div class="relative mt-1">
+                <details class="relative details-anim" id="gender-details">
+                    <summary class="flex items-center justify-between w-full bg-white text-gray-700 px-3 py-2 rounded-md cursor-pointer list-none select-none border">
+                        <span id="gender-selected" data-lang-text="genderPlaceholder">-- 請選擇 --</span>
+                        <svg class="w-4 h-4 transform transition-transform duration-150" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </summary>
+                    <div class="absolute left-0 mt-2 w-full bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
+                        <ul id="gender-options" class="py-1">
+                            <li><button type="button" data-value="" class="w-full text-left px-4 py-2 hover:bg-gray-100" data-lang="genderPlaceholder">-- 請選擇 --</button></li>
+                            <li><button type="button" data-value="male" class="w-full text-left px-4 py-2 hover:bg-gray-100" data-lang="genderMale">男</button></li>
+                            <li><button type="button" data-value="female" class="w-full text-left px-4 py-2 hover:bg-gray-100" data-lang="genderFemale">女</button></li>
+                        </ul>
+                    </div>
+                </details>
+                <input type="hidden" id="gender" name="gender" required>
+                <div class="field-error text-red-600 text-sm mt-1 h-5" data-for="gender"></div>
+            </div>
+          </div>
+
+          <label class="block">
+            <div class="flex items-center gap-1" data-lang="fieldDob">出生日期 <span class="text-red-500">*</span></div>
+            <input type="date" id="birthdate" name="birthdate" required class="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <div class="field-error text-red-600 text-sm mt-1 h-5" data-for="birthdate"></div>
+          </label>
+
+          <div class="block">
+            <div class="flex items-center gap-1" data-lang="fieldPhone">電話 <span class="text-red-500">*</span></div>
+            <div class="mt-1 flex">
+                <div class="relative">
+                    <details class="relative details-anim" id="phone-country-details">
+                        <summary class="flex items-center gap-2 bg-white text-gray-700 px-3 py-2 rounded-l-md cursor-pointer list-none select-none border-t border-b border-l">
+                            <span id="phone-country-selected">澳門 +853</span>
+                            <svg class="w-4 h-4 transform transition-transform duration-150" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </summary>
+                        <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
+                            <ul id="phone-country-options" class="py-1">
+                                <li><button type="button" data-value="+853" class="w-full text-left px-4 py-2 hover:bg-gray-100">澳門 +853</button></li>
+                                <li><button type="button" data-value="+86" class="w-full text-left px-4 py-2 hover:bg-gray-100">中國大陸 +86</button></li>
+                                <li><button type="button" data-value="+852" class="w-full text-left px-4 py-2 hover:bg-gray-100">香港 +852</button></li>
+                            </ul>
+                        </div>
+                    </details>
+                    <input type="hidden" id="phoneCountry" name="phoneCountry" value="+853">
+                </div>
+              <input type="tel" id="phone" name="phone" required class="flex-1 border-t border-b border-r border-gray-300 rounded-r px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="field-error text-red-600 text-sm mt-1 h-5" data-for="phone"></div>
+          </div>
+
+          <label class="block">
+            <div class="flex items-center gap-1" data-lang="fieldEmail">電郵</div>
+            <input type="email" id="email" name="email" class="mt-1 w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <div class="field-error text-red-600 text-sm mt-1 h-5" data-for="email"></div>
+          </label>
+
+          <div class="actions flex justify-between mt-4">
+            <a href="index.html" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md" data-lang="btnBack">返回</a>
+            <button type="button" id="toStep3" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full sm:w-auto" data-lang="btnNext">下一步</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="step hidden" data-step="2">
+        <h2 class="text-lg sm:text-xl lg:text-2xl font-bold" data-lang="step2Title">2. 確認</h2>
+        <div id="summary" class="mt-3 bg-blue-50 border border-blue-100 p-4 rounded text-lg sm:text-xl text-gray-800"></div>
+        <div class="actions flex justify-between mt-4">
+          <button id="backTo2" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded w-full sm:w-auto" data-lang="btnPrev">上一步</button>
+          <button id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full sm:w-auto" data-lang="btnConfirm">確認送出</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="fixed right-6 bottom-6 bg-white shadow-lg rounded-lg p-4 opacity-0 translate-y-6 transition-all duration-300 z-50">
+      <div class="flex items-center justify-between gap-4">
+        <div id="toastMessage" class="min-w-[160px]"></div>
+        <button id="closeToast" class="text-gray-600 hover:text-gray-900" data-lang="btnClose">關閉</button>
+      </div>
+    </div>
+  </main>
+  <style>
+    /* High Contrast Mode */
+    .high-contrast {
+        background-color: #000 !important;
+        color: #fff !important;
+    }
+    .high-contrast .bg-white, .high-contrast .bg-gray-50, .high-contrast main, .high-contrast #toast {
+        background-color: #000 !important;
+        color: #fff !important;
+        border-color: #fff;
+    }
+    .high-contrast header {
+        border-color: #fff;
+    }
+    .high-contrast [class*="text-gray"] {
+        color: #fff !important;
+    }
+    .high-contrast .text-teal-700 {
+        color: #80CBC4 !important; /* A lighter teal for contrast */
+    }
+    .high-contrast .text-red-600 {
+        color: #ff8a80 !important;
+    }
+    .high-contrast input, .high-contrast details summary, .high-contrast a.bg-gray-200 {
+        background-color: #333 !important;
+        border-color: #fff !important;
+        color: #fff !important;
+    }
+    .high-contrast img {
+        filter: grayscale(100%) contrast(200%);
+    }
+    input[type="checkbox"]:checked + div + .dot {
+        transform: translateX(100%);
+        background-color: #00897B;
+    }
+    .details-anim summary svg { transition: transform .18s ease; }
+    .details-anim[open] summary svg { transform: rotate(180deg); }
+    .details-anim > .dropdown-panel {
+        opacity: 0;
+        transform: translateY(-6px) scale(.99);
+        transition: opacity .18s ease, transform .18s ease;
+        pointer-events: none;
+    }
+    .details-anim[open] > .dropdown-panel {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+  </style>
+  <script src="app.js"></script>
+</body>
+</html>

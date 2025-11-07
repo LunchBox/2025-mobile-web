@@ -1,0 +1,24 @@
+{
+  "name": "cpttm-course-platform",
+  "version": "1.0.0",
+  "description": "澳門生產力暨科技轉移中心 - 課程平台",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 8000 -o",
+    "start": "npx http-server -p 8000",
+    "build": "node build.js"
+  },
+  "keywords": [
+    "course",
+    "platform",
+    "vue",
+    "tailwind",
+    "responsive"
+  ],
+  "author": "CPTTM",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {}
+}

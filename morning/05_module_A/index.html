@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>課程列表</title>
+        <!-- Tailwind via CDN for quick setup -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Noto Sans', 'Noto Sans TC', sans-serif;
+                background-color: #E9F5F4;
+            }
+            .highlight { background: linear-gradient(90deg, #B2DFDB, #B2DFDB); }
+            .btn-primary {
+                background-color: #00897B; /* A teal color from the images */
+                color: white;
+            }
+            .btn-primary:hover {
+                background-color: #00695C;
+            }
+            .btn-secondary {
+                background-color: #E0E0E0;
+                color: #333;
+            }
+            .btn-secondary:hover {
+                background-color: #BDBDBD;
+            }
+            .pagination-active {
+                background-color: #00897B !important;
+                color: white !important;
+                border-color: #00897B !important;
+            }
+
+            /* High Contrast Mode */
+            .high-contrast {
+                background-color: #000 !important;
+                color: #fff !important;
+            }
+            .high-contrast .bg-white, .high-contrast .bg-gray-50 {
+                background-color: #000 !important;
+                color: #fff !important;
+                border: 1px solid #fff;
+            }
+            .high-contrast header, .high-contrast footer {
+                border-color: #fff;
+            }
+            .high-contrast [class*="text-gray"] {
+                color: #fff !important;
+            }
+            .high-contrast .text-teal-600 {
+                color: #80CBC4 !important; /* A lighter teal for contrast */
+            }
+            .high-contrast .btn-primary {
+                background-color: #000;
+                border: 1px solid #fff;
+                color: #fff;
+            }
+            .high-contrast .btn-secondary {
+                background-color: #333;
+                border: 1px solid #fff;
+                color: #fff;
+            }
+            .high-contrast .highlight {
+                background: #FFFF00 !important;
+                color: #000 !important;
+            }
+            .high-contrast img {
+                filter: grayscale(100%) contrast(200%);
+            }
+        </style>
+</head>
+<body class="text-gray-700">
+
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Desktop & Tablet Header -->
+            <div class="hidden md:flex flex-col md:flex-row md:items-center md:justify-between gap-3 py-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800" data-lang="pageTitle">課程列表</h1>
+                    <p class="text-sm text-gray-500" data-lang="pageSubtitle">探索澳門生產力暨科技轉移中心的精彩課程</p>
+                </div>
+    
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center border rounded-md overflow-hidden bg-gray-50">
+                      <input id="searchInputDesktop" type="" data-lang-placeholder="searchPlaceholder" placeholder="搜尋課程編號或名稱" class="px-3 py-2 w-48 lg:w-80 focus:outline-none bg-transparent" />
+                      <button id="clearSearchDesktop" type="button" title="清除" aria-label="清除搜尋" class="px-3 text-gray-500">✕</button>
+                    </div>
+                    
+                    <div class="relative">
+                        <style>
+                            /* rotate svg when details is open */
+                            .details-anim summary svg {
+                                transition: transform .18s ease;
+                            }
+                            .details-anim[open] summary svg {
+                                transform: rotate(180deg);
+                            }
+
+                            /* fade + slide panel */
+                            .details-anim > .dropdown-panel {
+                                opacity: 0;
+                                transform: translateY(-6px) scale(.99);
+                                transition: opacity .18s ease, transform .18s ease;
+                                pointer-events: none; /* prevent interaction when closed */
+                            }
+                            .details-anim[open] > .dropdown-panel {
+                                opacity: 1;
+                                transform: translateY(0) scale(1);
+                                pointer-events: auto;
+                            }
+                        </style>
+
+                        <!-- Styled details dropdown to match the provided screenshot -->
+                        <details class="relative details-anim">
+                            <summary class="flex items-center gap-2 bg-white text-gray-700 px-4 py-2 rounded-md cursor-pointer list-none select-none border">
+                                <span class="font-medium" data-lang="sortBy">排序方式</span>
+                                <svg class="w-4 h-4 transform transition-transform duration-150" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M6 8L10 12L14 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </summary>
+                            <div class="absolute left-0 mt-2 w-44 bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
+                                <ul id="desktopSort" class="py-1">
+                                    <li><button data-sort="date" class="w-full text-left px-4 py-2 hover:bg-gray-100" data-lang="sortByDate">按開課日期</button></li>
+                                    <li><button data-sort="price" class="w-full text-left px-4 py-2 hover:bg-gray-100" data-lang="sortByPrice">按價格</button></li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+    
+                    <div class="flex items-center border rounded-md">
+                      <button id="cardView" class="px-3 py-2" title="卡片排版" data-lang-title="layoutCard" data-lang="card">卡片</button>
+                      <button id="listView" class="px-3 py-2" title="清單排版" data-lang-title="layoutList" data-lang="list">清單</button>
+                    </div>
+                    
+                    <!-- Accessibility Dropdown -->
+                    <div class="relative">
+                        <details class="relative details-anim">
+                            <summary class="flex items-center gap-2 bg-white text-gray-700 p-2 rounded-md cursor-pointer list-none select-none border" aria-label="Accessibility Options">
+                                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            </summary>
+                            <div class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg text-gray-800 z-20 ring-1 ring-black ring-opacity-5 dropdown-panel">
+                                <div class="p-4">
+                                    <label for="highContrastToggleDesktop" class="flex items-center justify-between cursor-pointer">
+                                        <span class="font-medium">高對比度</span>
+                                        <div class="relative">
+                                            <input type="checkbox" id="highContrastToggleDesktop" class="sr-only" />
+                                            <div class="block bg-gray-200 w-10 h-6 rounded-full"></div>
+                                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="border rounded-md px-2 py-2 flex items-center gap-2">
+                      <label for="langToggle">
+                        <img src="images/translate.png" alt="Language" class="w-5 h-5">
+                      </label>
+                      <button id="langToggle" class="text-sm">EN</button>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Mobile Header -->
+            <div class="md:hidden">
+                <!-- Top bar: Title and Hamburger Menu -->
+                <div class="flex items-center justify-between h-16">
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800" data-lang="pageTitle">課程列表</h1>
+                        <p class="text-xs text-gray-500" data-lang="pageSubtitle">探索澳門生產力暨科技轉移中心的精彩課程</p>
+                    </div>
+                    <div class="relative">
+                        <!-- hamburger button -->
+                        <button id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="menuDropdown" class="inline-flex items-center justify-center w-10 h-10 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-300 transition">
+                            <svg id="menuIcon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <!-- dropdown -->
+                        <div id="menuDropdown" role="menu" aria-labelledby="menuBtn" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-20">
+                            <div class="py-1" id="mobileMenuContainer">
+                                <!-- Mobile controls will be injected here by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search bar below top bar on mobile -->
+                <div class="py-2">
+                    <div class="flex items-center border rounded-md overflow-hidden bg-white">
+                        <input id="searchInputMobile" type="" data-lang-placeholder="searchPlaceholder" placeholder="搜尋課程編號或名稱" class="px-3 py-2 w-full focus:outline-none" />
+                        <button id="clearSearchMobile" type="button" title="清除" aria-label="清除搜尋" class="px-3 text-gray-500">✕</button>
+                    </div>
+                </div>
+                <!-- Mobile Pagination -->
+                <nav id="paginationMobile" class="py-2 flex items-center justify-center gap-2"></nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-6">
+        <!-- courses container -->
+        <div id="coursesContainer" class="grid gap-4"></div>
+
+        <!-- pagination -->
+        
+    </main>
+
+    <!-- Desktop Pagination -->
+    <nav id="pagination" class="hidden md:flex flex-col gap-2 fixed top-1/2 -translate-y-1/2 right-4 z-10"></nav>
+
+
+    <!-- Scroll to Top/Bottom Buttons -->
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-2">
+        <button id="scrollTopBtn" title="Scroll to Top" aria-label="Scroll to Top" class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-100 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+        </button>
+        <button id="scrollBottomBtn" title="Scroll to Bottom" aria-label="Scroll to Bottom" class="w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-100 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+    </div>
+
+    <div class="imgzoombox" id="imgzoombox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index: 999;">
+      <div id="zoomWrapper" style="position:relative;transform:scale(.96);opacity:0;transition:transform .18s ease,opacity .18s ease;">
+        <button id="zoomClose" aria-label="Close" style="position:absolute;right:-8px;top:-28px;padding:4px 8px; color: white; font-size: 1.5rem;">✕</button>
+        <img id="zoomImg" src="" alt="zoom" style="display:block;width:800px;max-width:90vw;max-height: 90vh;height:auto;transition:transform .18s ease,opacity .18s ease;transform:scale(.98);opacity:0;">
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed right-6 bottom-6 bg-white shadow-lg rounded-lg p-4 opacity-0 translate-y-6 transition-all duration-300 z-50 high-contrast:bg-black high-contrast:border high-contrast:border-white">
+        <div class="flex items-center justify-between gap-4">
+            <div id="toastMessage" class="min-w-[160px]"></div>
+            <button id="closeToast" class="text-gray-600 hover:text-gray-900 high-contrast:text-white" data-lang="btnClose">關閉</button>
+        </div>
+    </div>
+
+    <style>
+            input[type="checkbox"]:checked + div + .dot {
+                transform: translateX(100%);
+                background-color: #00897B;
+            }
+        </style>
+    <script src="main.js"></script>
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const dropdown = document.getElementById('menuDropdown');
+        const menuIcon = document.getElementById('menuIcon');
+        let open = false;
+
+        function openMenu(){
+            dropdown.classList.remove('hidden');
+            menuBtn.setAttribute('aria-expanded','true');
+            menuIcon.style.transform = 'rotate(90deg)';
+            menuIcon.style.transition = 'transform 200ms ease';
+            open = true;
+        }
+        function closeMenu(){
+            dropdown.classList.add('hidden');
+            menuBtn.setAttribute('aria-expanded','false');
+            menuIcon.style.transform = '';
+            open = false;
+        }
+
+        menuBtn.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            if(open) closeMenu(); else openMenu();
+        });
+
+        // Close on item click
+        dropdown.addEventListener('click', () => closeMenu());
+
+        // Close on click outside
+        document.addEventListener('click', (e)=>{
+            if(open && !dropdown.contains(e.target) && !menuBtn.contains(e.target)) closeMenu();
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', (e)=>{
+            if(e.key === 'Escape' && open) closeMenu();
+        });
+
+        // --- Scroll Buttons ---
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        const scrollBottomBtn = document.getElementById('scrollBottomBtn');
+
+        if (scrollTopBtn && scrollBottomBtn) {
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            scrollBottomBtn.addEventListener('click', () => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            });
+        }
+
+        // --- Image Zoom ---
+        const box = document.getElementById('imgzoombox');
+        const zoomImg = document.getElementById('zoomImg');
+        const zoomClose = document.getElementById('zoomClose');
+
+        function openZoom(src, alt, large){
+          zoomImg.src = src || large || '';
+          zoomImg.alt = alt || '';
+          box.style.display = 'flex';
+          // allow layout then animate
+          requestAnimationFrame(()=>{
+            const w = document.getElementById('zoomWrapper');
+            w.style.transform = 'scale(1)'; w.style.opacity = '1';
+            zoomImg.style.transform = 'scale(1)'; zoomImg.style.opacity = '1';
+          });
+          document.body.style.overflow = 'hidden';
+          if(large && large !== src){
+            const L = new Image();
+            L.onload = () => { zoomImg.src = large; };
+            L.src = large;
+          }
+        }
+
+        function closeZoom(){
+          const w = document.getElementById('zoomWrapper');
+          // animate out
+          w.style.transform = 'scale(.96)'; w.style.opacity = '0';
+          zoomImg.style.transform = 'scale(.98)'; zoomImg.style.opacity = '0';
+          setTimeout(()=>{ box.style.display = 'none'; zoomImg.src = ''; document.body.style.overflow = ''; }, 190);
+        }
+
+        box.addEventListener('click', e => { if(e.target === box) closeZoom(); });
+        zoomClose.addEventListener('click', closeZoom);
+        document.addEventListener('keydown', e => { if(e.key === 'Escape') closeZoom(); });
+
+        function setupZoomableImages() {
+            document.querySelectorAll('img.zoomable').forEach(img => {
+              const large = img.dataset.large || img.src;
+              img.style.cursor = 'zoom-in';
+              img.tabIndex = 0;
+              
+              // Remove old listeners to prevent duplicates
+              const newImg = img.cloneNode(true);
+              img.parentNode.replaceChild(newImg, img);
+
+              newImg.addEventListener('click', () => openZoom(newImg.src, newImg.alt, large));
+              newImg.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') openZoom(newImg.src, newImg.alt, large); });
+            });
+        }
+    </script>
+</body>
+</html>

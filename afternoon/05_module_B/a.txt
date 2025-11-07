@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>comment</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+    <main class="min-h-screen bg-slate-50 p-4 sm:p-6">
+        <div class="max-w-3xl mx-auto px-2 sm:px-0">
+            <header class="mb-6">
+                <h1 class="text-3xl font-bold text-slate-800">簡單留言板</h1>
+            </header>
+
+            <!-- Composer: fixed on small screens, static on sm+ -->
+            <section class="mb-6">
+                <form id="message-form" class="bg-white p-3 rounded shadow fixed bottom-4 left-2 right-2 flex items-center gap-2 sm:static sm:p-4 sm:flex-col sm:items-stretch sm:gap-3">
+
+                    <div class="flex-1 sm:block">
+                        <label for="message" class="sr-only">留言</label>
+                        <input type="text" id="message" name="message" required placeholder="請輸入留言..." autofocus class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 text-sm">
+                        <p id="form-error" class="mt-2 text-sm text-red-600 sr-only" aria-live="polite"></p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">送出</button>
+                    </div>
+                </form>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-semibold mb-3">留言列表</h2>
+                <div id="messages" class="space-y-4"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+css.css
+
+/* Basic custom styles for the simple 留言板 */
+html,body{height:100%;}
+body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+
+/* Make message area scroll nicely on small screens */
+#messages{max-height:60vh; overflow:auto; padding-right:4px}
+
+.break-words{word-break:break-word}
+
+/* Ensure contenteditable caret is visible and black like normal inputs */
+.message-text:focus{
+	outline: 2px solid rgba(2,6,23,0.06);
+	outline-offset: 2px;
+	caret-color: black; /* blinking caret color */
+}
+
+/* Improve caret visibility on high-contrast backgrounds */
+.message-text{caret-color: black}
+
+/* avatar */
+.avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 9999px;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.author-row { display: flex; align-items: center; gap: 8px }
+.author-name { display: inline-block }
+script.js
+
+// Simple message board: provides add/edit/delete functionality (owner-only for edit/delete).
+
+const STORAGE_KEY = 'simple_message_board_v1';
+const VIEWER_KEY = 'simple_message_board_viewer';
+
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='%23cbd5e1'><rect width='24' height='24' rx='12' fill='%23e2e8f0'/%3E<path d='M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z' fill='%2399aabb'/%3E</svg>";
+const EMBEDDED_SEED = [
+	{ id: 'seed-1', text: '歡迎來訪！' },
+	{ id: 'seed-2', text: '想問一下這個課程的大概內容。' },
+	{ id: 'seed-3', text: '有人可以告訴我這個課程值這個價錢嗎？' },
+	{ id: 'seed-4', text: '這個網站新的功能大家覺得怎麼樣？' },
+	{ id: 'seed-5', text: '得不錯！' },
+	{ id: 'seed-6', text: '我有一個建議：可以加上搜尋功能。' },
+	{ id: 'seed-7', text: '感謝分享，我學到了很多。' },
+	{ id: 'seed-8', text: '手機瀏覽器的樣式是否正常？' },
+	{ id: 'seed-9', text: '我剛加入這個留言板，大家好！' },
+	{ id: 'seed-10', text: '我覺得這個價錢就能上到這課簡直就是賺了。' }
+];
+
+		function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+		function randomSuffix(len = 6) { return Math.random().toString(36).slice(2, 2 + len) || uid().slice(-len); }
+		function randomPastDate(maxDays = 60) {
+			const days = Math.floor(Math.random() * maxDays) + 1;
+			const hours = Math.floor(Math.random() * 24);
+			const minutes = Math.floor(Math.random() * 60);
+			const seconds = Math.floor(Math.random() * 60);
+			const ms = (((days * 24) + hours) * 3600 + minutes * 60 + seconds) * 1000;
+			return new Date(Date.now() - ms).toISOString();
+		}
+
+		function getViewerName() {
+            const re = /^user [0-9a-z]{6}$/i;
+            let v = localStorage.getItem(VIEWER_KEY);
+            if (v && re.test(v)) return v;
+            const newV = 'user ' + randomSuffix(6);
+            localStorage.setItem(VIEWER_KEY, newV);
+            return newV;
+		}
+
+		// Force-reset the stored viewer name to the required format.
+		function resetViewerName() {
+			const newV = 'user ' + randomSuffix(6);
+			localStorage.setItem(VIEWER_KEY, newV);
+			return newV;
+		}
+
+		function safeText(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+		function loadMessages() { const raw = localStorage.getItem(STORAGE_KEY); try { return raw ? JSON.parse(raw) : []; } catch (e) { console.error('Failed to parse messages', e); return []; } }
+		function saveMessages(msgs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs)); }
+
+		function seedFromDataJsonIfEmpty() {
+			// When localStorage is empty, populate with the embedded seed only.
+			const existing = loadMessages();
+			if (existing && existing.length) return;
+			const prepared = EMBEDDED_SEED.map(d => ({ id: d.id || uid(), name: 'user ' + randomSuffix(6), text: d.text || '', createdAt: randomPastDate(90) }));
+			saveMessages(prepared);
+		}
+
+		function renderMessages() {
+			const container = document.getElementById('messages');
+			if (!container) return;
+			container.innerHTML = '';
+			const viewer = getViewerName();
+			const msgs = loadMessages().slice().reverse();
+			if (msgs.length === 0) { container.innerHTML = '<div class="text-slate-500">目前還沒有留言，成為第一位留言的人吧！</div>'; return; }
+			msgs.forEach(m => {
+				const el = document.createElement('article');
+				el.className = 'bg-white p-4 rounded shadow';
+				el.innerHTML = `
+					<div class="flex justify-between items-start">
+						<div>
+							<div class="text-sm text-slate-700 author-row"><span class="avatar"><img src="https://cdn-icons-png.flaticon.com/128/3177/3177440.png" onerror="this.onerror=null;this.src='${DEFAULT_AVATAR}';" alt="avatar"/></span><span class="author-name"><strong>${safeText(m.name)}</strong></span></div>
+							<div class="text-xs text-slate-400">${new Date(m.createdAt).toLocaleString()}</div>
+						</div>
+						<div class="space-x-2">
+							${m.name === viewer ? `<button data-id="${m.id}" class="edit-btn text-sky-600 hover:underline">編輯</button><button data-id="${m.id}" class="delete-btn text-red-600 hover:underline">刪除</button>` : ''}
+						</div>
+					</div>
+					<div class="mt-2 text-slate-800 break-words message-text" data-id="${m.id}">${safeText(m.text).replace(/\n/g,'<br>')}</div>
+				`;
+				container.appendChild(el);
+			});
+			container.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', (e) => deleteMessage(e.currentTarget.getAttribute('data-id'))));
+			container.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', (e) => openInlineEditor(e.currentTarget.getAttribute('data-id'))));
+		}
+
+
+		function addMessage(name, text) {
+			const msgs = loadMessages();
+			const id = uid();
+			const finalName = (name && name.trim()) ? name.trim() : getViewerName();
+			msgs.push({ id, name: finalName, text: (text || '').trim(), createdAt: new Date().toISOString() });
+			saveMessages(msgs);
+			renderMessages();
+		}
+
+		function deleteMessage(id) { if (!confirm('確定要刪除此則留言嗎？')) return; const msgs = loadMessages(); const idx = msgs.findIndex(m => m.id === id); if (idx === -1) return; const viewer = getViewerName(); msgs.splice(idx,1); saveMessages(msgs); renderMessages(); }
+
+		function openInlineEditor(id) {
+			const container = document.getElementById('messages');
+			const msgTextEl = container.querySelector(`.message-text[data-id="${id}"]`);
+			if (!msgTextEl) return;
+			const msgsAll = loadMessages();
+			const target = msgsAll.find(m => m.id === id);
+			const viewer = getViewerName();
+			if (!target) return;
+			if (target.name !== viewer) { alert('您只能編輯自己的留言'); return; }
+			if (msgTextEl.dataset.editing === 'true') return; msgTextEl.dataset.editing = 'true';
+
+			const origText = target.text;
+			const editorWrap = document.createElement('div'); editorWrap.className = 'mt-2 flex items-start gap-2';
+			const textarea = document.createElement('textarea'); textarea.className = 'flex-1 mt-0 block w-full rounded border-slate-200 shadow-sm focus:border-sky-500 focus:ring-sky-500 p-2'; textarea.rows = 4; textarea.value = origText;
+			const doneBtn = document.createElement('button'); doneBtn.type = 'button'; doneBtn.className = 'ml-2 inline-flex items-center px-3 py-2 bg-sky-600 text-white rounded hover:bg-sky-700'; doneBtn.textContent = '完成';
+			editorWrap.appendChild(textarea); editorWrap.appendChild(doneBtn); msgTextEl.replaceWith(editorWrap);
+			textarea.focus(); textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+
+			function closeEditor(save) {
+				if (save) {
+					const newText = textarea.value.trim();
+					if (!newText) { alert('留言不可為空'); textarea.focus(); return; }
+					const msgs = loadMessages();
+					const idx = msgs.findIndex(m => m.id === id);
+					if (idx === -1) { alert('找不到該留言'); renderMessages(); return; }
+					msgs[idx].text = newText; saveMessages(msgs); renderMessages();
+				} else {
+					renderMessages();
+				}
+			}
+
+			doneBtn.addEventListener('click', () => closeEditor(true));
+			textarea.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); closeEditor(true); } if (e.key === 'Escape') { e.preventDefault(); closeEditor(false); } });
+		}
+
+		// Single initialization block
+		document.addEventListener('DOMContentLoaded', async () => {
+			await seedFromDataJsonIfEmpty();
+			// Reset the viewer name to the format 'user '+6 alphanumeric chars on each load
+			resetViewerName();
+			renderMessages();
+
+			const form = document.getElementById('message-form');
+			const messageInput = document.getElementById('message');
+			const formError = document.getElementById('form-error');
+			if (form) {
+				form.addEventListener('submit', (e) => {
+					e.preventDefault();
+					const message = (messageInput && messageInput.value) || '';
+					if (!message.trim()) {
+						if (formError) formError.textContent = '留言不可為空';
+						alert('留言不可為空');
+						if (messageInput) messageInput.focus();
+						return;
+					}
+					if (formError) formError.textContent = '';
+					addMessage('', message);
+					form.reset();
+				});
+			}
+		});

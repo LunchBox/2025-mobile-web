@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>課程列表｜生產力中心</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <header id="header" class="hover-wrapper" role="banner">
+    <div class="title-row">
+      <h1 aria-label="生產力中心">生產力中心</h1>
+      
+    </div>
+    <div class="hover-to-show" aria-hidden="true"><h3 id="subtitle">探索澳門生產力暨科技轉移中心的精彩課程</h3></div>
+  </header>
+
+  <main id="main" role="main" aria-labelledby="pageTitle">
+    <h2 id="pageTitle" class="sr-only">課程列表</h2>
+    <section class="toolbar" aria-label="功能工具列">
+      <form id="searchForm" class="search-form" role="search" aria-label="課程搜尋">
+        <label for="keyword" class="search-label">搜尋</label>
+        <div class="search-input-wrap">
+          <input id="keyword" name="keyword" type="search" placeholder="輸入課程名稱或課程編號…" autocomplete="off" />
+          <button type="button" id="clearSearch" class="ghost-btn" aria-label="清除搜尋">清除</button>
+        </div>
+      </form>
+
+      <div class="controls-row">
+        <div class="sort-wrap" role="group" aria-label="排序">
+          <label for="sortSelect">排序</label>
+          <select id="sortSelect" name="sort">
+            <option value="dateAsc">開課日期（最近優先）</option>
+            <option value="priceAsc">價格（由低到高）</option>
+          </select>
+        </div>
+
+        <div class="layout-toggle" role="group" aria-label="版式切換">
+          <button type="button" id="btnCard" class="toggle-btn active" aria-pressed="true">卡片</button>
+          <button type="button" id="btnList" class="toggle-btn" aria-pressed="false">列表</button>
+        </div>
+
+        <div class="lang-switch" role="group" aria-label="語言切換">
+          <button type="button" id="langZh" class="chip active" aria-pressed="true">中文</button>
+          <button type="button" id="langEn" class="chip" aria-pressed="false">EN</button>
+        </div>
+      </div>
+
+      <nav class="pagination top" aria-label="頁碼（上）">
+        <button class="page-btn" id="prevPageTop" aria-label="上一頁">上一頁</button>
+        <div class="page-numbers" id="pageNumbersTop" aria-hidden="true"></div>
+        <button class="page-btn" id="nextPageTop" aria-label="下一頁">下一頁</button>
+      </nav>
+    </section>
+
+    <section id="courseContainer" class="course-grid" aria-live="polite" aria-busy="true">
+      <!-- JS 渲染 -->
+    </section>
+
+    <nav class="pagination bottom" aria-label="頁碼（下）">
+      <button class="page-btn" id="prevPageBottom" aria-label="上一頁">上一頁</button>
+      <div class="page-numbers" id="pageNumbersBottom" aria-hidden="true"></div>
+      <button class="page-btn" id="nextPageBottom" aria-label="下一頁">下一頁</button>
+    </nav>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <small>© 澳門生產力暨科技轉移中心</small>
+  </footer>
+
+</body>
+  <script defer src="func.js"></script>
+  <script src="main.js" defer></script>
+</html>

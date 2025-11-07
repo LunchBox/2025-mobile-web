@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL 語言入門｜課程詳情</title>
+  <style>
+    :root {
+      --bg: #f8f5ef;
+      --surface: #ffffff;
+      --surface-alt: #fff4ea;
+      --accent: #f37b6a;
+      --accent-dark: #d75260;
+      --accent-light: #fbb07c;
+      --text: #3a2f2b;
+      --muted: #6c5b57;
+      --border: #eaded1;
+      --shadow: 0 14px 32px -18px rgba(91, 49, 0, 0.35);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --transition: 0.25s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0 1.25rem 2.5rem;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .global-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.5rem 0 1rem;
+      align-items: center;
+    }
+
+    .breadcrumb-nav {
+      flex: 1 1 260px;
+    }
+
+    .breadcrumb {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      text-decoration: none;
+      opacity: 0.85;
+    }
+
+    .breadcrumb a:hover,
+    .breadcrumb a:focus-visible {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .language-switch {
+      display: inline-flex;
+      background: var(--surface-alt);
+      border-radius: 999px;
+      padding: 0.2rem;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+
+    .lang-btn:hover,
+    .lang-btn:focus-visible {
+      background: rgba(255,255,255,0.8);
+      color: var(--text);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .lang-btn--active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 6px 16px -12px rgba(0,0,0,0.35);
+    }
+
+    .favorite-btn {
+      border: 1px solid rgba(0,0,0,0.06);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 0.35rem 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+
+    .favorite-btn:hover,
+    .favorite-btn:focus-visible {
+      background: var(--surface-alt);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px -16px rgba(0,0,0,0.45);
+      outline: none;
+    }
+
+    .favorite-btn__icon {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+    }
+
+    .tour-btn {
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff7f2;
+      padding: 0.45rem 1.15rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .tour-btn:hover,
+    .tour-btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px -20px rgba(243,123,106,0.7);
+      background: var(--accent-dark);
+      outline: none;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(243, 123, 106, 0.92) 0%, rgba(255, 187, 120, 0.85) 100%);
+      color: #fff8f3;
+      padding: 2.5rem 2.2rem;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 12% -15% -40% 60%;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.28), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.18);
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 2.9rem);
+      margin: 1rem 0 0.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero__subtitle {
+      font-size: 1.08rem;
+      max-width: 620px;
+      margin: 0 0 1.5rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .hero__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero__meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .meta-value {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    .hero__status {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.05rem;
+      max-width: 340px;
+    }
+
+    .hero__status strong {
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+    }
+
+    .hero__status span {
+      font-size: 0.9rem;
+    }
+
+    .hero__notify-btn {
+      margin-top: 1.5rem;
+      border: none;
+      background: rgba(255,255,255,0.92);
+      color: var(--accent);
+      padding: 0.75rem 1.4rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.98rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
+    }
+
+    .hero__notify-btn:hover,
+    .hero__notify-btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 46px -28px rgba(255,255,255,0.9);
+      color: var(--accent-dark);
+      outline: none;
+    }
+
+    .main-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: clamp(1.35rem, 3vw, 1.8rem);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(140deg, rgba(255,255,255,0.0) 0%, rgba(255,247,240,0.55) 100%);
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+    }
+
+    .card:hover::after,
+    .card:focus-within::after {
+      opacity: 1;
+    }
+
+    .intro-card {
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card p {
+      margin: 0.6rem 0 0;
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+
+    .styled-list {
+      list-style: none;
+      margin: 0.75rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .styled-list li {
+      position: relative;
+      padding-left: 1.35rem;
+      color: var(--muted);
+    }
+
+    .styled-list li::before {
+      content: "";
+      position: absolute;
+      top: 0.55em;
+      left: 0;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: linear-gradient(130deg, var(--accent) 0%, var(--accent-light) 100%);
+      box-shadow: 0 0 0 4px rgba(243,123,106,0.12);
+    }
+
+    .detail-block.two-col {
+      display: grid;
+      gap: 1.35rem;
+    }
+
+    .detail-block.two-col > div {
+      background: rgba(255,244,234,0.55);
+      padding: 1rem 1.2rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .note {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.95rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(243,123,106,0.08);
+      border-radius: 0 12px 12px 0;
+      color: var(--muted);
+    }
+
+    .timeline {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding-left: 0;
+      position: relative;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 0.3rem;
+      bottom: 0.3rem;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(243,123,106,0.4), rgba(243,123,106,0.05));
+    }
+
+    .timeline li {
+      padding-left: 2.2rem;
+      position: relative;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 0.2rem;
+      width: 12px;
+      height: 12px;
+      background: var(--surface);
+      border: 3px solid var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(243,123,106,0.15);
+    }
+
+    .schedule-tools {
+      display: grid;
+      gap: 1.25rem;
+      background: linear-gradient(140deg, rgba(255,244,234,0.92) 0%, rgba(255,255,255,0.95) 100%);
+    }
+
+    .calendar-download {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .calendar-button {
+      border: none;
+      background: linear-gradient(135deg, rgba(243,123,106,0.92), rgba(247,156,109,0.95));
+      color: #fff7f3;
+      padding: 0.85rem 1.4rem;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 0.98rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: center;
+      box-shadow: 0 16px 32px -20px rgba(243,123,106,0.8);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .calendar-button:hover,
+    .calendar-button:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 24px 42px -26px rgba(243,123,106,0.95);
+      outline: none;
+    }
+
+    .calendar-note {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .conflict-checker {
+      background: rgba(255,255,255,0.72);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem 1.3rem;
+      display: grid;
+      gap: 0.9rem;
+      border: 1px solid rgba(243,123,106,0.18);
+    }
+
+    .conflict-checker h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .conflict-checker p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .conflict-form {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: end;
+    }
+
+    .form-row {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.03em;
+    }
+
+    .form-input {
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: rgba(255,255,255,0.92);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .form-input:focus {
+      border-color: rgba(243,123,106,0.65);
+      box-shadow: 0 0 0 4px rgba(243,123,106,0.18);
+      outline: none;
+    }
+
+    .conflict-submit {
+      justify-self: stretch;
+      border: none;
+      background: var(--surface-alt);
+      color: var(--text);
+      padding: 0.65rem 1.2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .conflict-submit:hover,
+    .conflict-submit:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 30px -24px rgba(51, 30, 0, 0.45);
+      outline: none;
+    }
+
+    .conflict-hint {
+      font-size: 0.85rem;
+      color: rgba(58,47,43,0.72);
+      margin: 0;
+    }
+
+    .conflict-result {
+      font-size: 0.95rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      border-left: 4px solid transparent;
+      background: rgba(243,123,106,0.08);
+      color: var(--text);
+      min-height: 3rem;
+    }
+
+    .conflict-result.is-success {
+      border-color: rgba(91, 179, 0, 0.45);
+      background: rgba(125, 200, 90, 0.12);
+    }
+
+    .conflict-result.is-alert {
+      border-color: rgba(243,123,106,0.65);
+      background: rgba(243,123,106,0.16);
+    }
+
+    .conflict-result.is-error {
+      border-color: rgba(215, 82, 96, 0.75);
+      background: rgba(215, 82, 96, 0.16);
+    }
+
+    .feature-intro {
+      background: linear-gradient(140deg, rgba(255,247,240,0.92) 0%, rgba(255,255,255,0.95) 100%);
+    }
+
+    .feature-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .feature-card--sandbox {
+      border: 1px solid rgba(243,123,106,0.2);
+      background: rgba(243,123,106,0.08);
+    }
+
+    .feature-card--milestone {
+      border: 1px solid rgba(247,156,109,0.2);
+      background: rgba(255,244,234,0.72);
+    }
+
+    .feature-card h3 {
+      margin: 0;
+      font-size: 1.18rem;
+      color: var(--accent-dark);
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .sandbox-console {
+      display: grid;
+      gap: 0.65rem;
+      background: rgba(243,123,106,0.08);
+      border-radius: 16px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(243,123,106,0.18);
+    }
+
+    .sandbox-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .sandbox-input {
+      width: 100%;
+      min-height: 120px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fff;
+      font-family: "Fira Code", "Courier New", monospace;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      padding: 0.75rem;
+      resize: vertical;
+    }
+
+    .sandbox-input:focus {
+      border-color: rgba(243,123,106,0.65);
+      box-shadow: 0 0 0 4px rgba(243,123,106,0.16);
+      outline: none;
+    }
+
+    .sandbox-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .sandbox-run,
+    .sandbox-reset {
+      border-radius: 999px;
+      padding: 0.58rem 1.4rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition), border-color var(--transition);
+    }
+
+    .sandbox-run {
+      border: none;
+      background: var(--accent);
+      color: #fff8f1;
+      box-shadow: 0 12px 28px -18px rgba(243,123,106,0.8);
+    }
+
+    .sandbox-run:hover,
+    .sandbox-run:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 38px -26px rgba(243,123,106,0.85);
+      outline: none;
+    }
+
+    .sandbox-reset {
+      border: 1px solid rgba(243,123,106,0.35);
+      background: #fff;
+      color: var(--accent-dark);
+    }
+
+    .sandbox-reset:hover,
+    .sandbox-reset:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px -22px rgba(243,123,106,0.6);
+      background: rgba(243,123,106,0.12);
+      outline: none;
+    }
+
+    .sandbox-result {
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 0.85rem;
+      overflow-x: auto;
+    }
+
+    .sandbox-placeholder {
+      font-size: 0.9rem;
+      color: var(--muted);
+      white-space: pre-wrap;
+    }
+
+    .sandbox-title {
+      font-weight: 600;
+      color: var(--accent-dark);
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+    }
+
+    .sandbox-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 360px;
+    }
+
+    .sandbox-table th,
+    .sandbox-table td {
+      padding: 0.5rem 0.65rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    .sandbox-table th {
+      background: rgba(243,123,106,0.08);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .sandbox-error {
+      font-size: 0.9rem;
+      color: var(--accent-dark);
+      background: rgba(243,123,106,0.16);
+      border-radius: 12px;
+      padding: 0.75rem 0.8rem;
+      font-weight: 500;
+    }
+
+    .milestone-copy {
+      display: grid;
+      gap: 0.65rem;
+      background: rgba(255,244,234,0.7);
+      border-radius: 16px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(243,123,106,0.16);
+    }
+
+    .milestone-label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .milestone-textarea {
+      width: 100%;
+      min-height: 160px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 0.8rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: vertical;
+      background: #fff;
+    }
+
+    .milestone-textarea:focus {
+      border-color: rgba(243,123,106,0.6);
+      box-shadow: 0 0 0 4px rgba(243,123,106,0.16);
+      outline: none;
+    }
+
+    .milestone-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    .milestone-refresh,
+    .milestone-copy-btn {
+      border-radius: 999px;
+      padding: 0.55rem 1.35rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition), border-color var(--transition);
+    }
+
+    .milestone-refresh {
+      border: 1px solid rgba(0,0,0,0.1);
+      background: #fff;
+      color: var(--text);
+    }
+
+    .milestone-refresh:hover,
+    .milestone-refresh:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -22px rgba(51, 30, 0, 0.35);
+      outline: none;
+    }
+
+    .milestone-copy-btn {
+      border: none;
+      background: linear-gradient(135deg, rgba(243,123,106,0.95), rgba(247,156,109,0.9));
+      color: #fff8f1;
+      box-shadow: 0 16px 32px -26px rgba(243,123,106,0.78);
+    }
+
+    .milestone-copy-btn:hover,
+    .milestone-copy-btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 24px 42px -30px rgba(243,123,106,0.86);
+      outline: none;
+    }
+
+    .milestone-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .milestone-status {
+      font-size: 0.85rem;
+      color: var(--accent-dark);
+      font-weight: 600;
+      min-height: 1.2rem;
+    }
+
+    .checklist-section {
+      background: linear-gradient(140deg, rgba(255,244,234,0.92) 0%, rgba(255,255,255,0.95) 100%);
+    }
+
+    .checklist-header h2 {
+      margin-bottom: 0.3rem;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .checklist__item {
+      margin: 0;
+    }
+
+    .checklist__toggle {
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.06);
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.8rem;
+      align-items: center;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
+      position: relative;
+    }
+
+    .checklist__toggle:hover,
+    .checklist__toggle:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 34px -28px rgba(51, 30, 0, 0.4);
+      border-color: rgba(243,123,106,0.35);
+      outline: none;
+    }
+
+    .checklist__box {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(243,123,106,0.08);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .checklist__label {
+      text-align: left;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .checklist__toggle.is-done {
+      background: rgba(243,123,106,0.12);
+      border-color: rgba(243,123,106,0.38);
+    }
+
+    .checklist__toggle.is-done .checklist__box {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .checklist__toggle.is-done .checklist__label {
+      color: rgba(58,47,43,0.75);
+      text-decoration: line-through;
+    }
+
+    .fact-card {
+      background: #201616;
+      color: #fff2ec;
+      box-shadow: 0 24px 48px -36px rgba(0,0,0,0.75);
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .fact-card h2 {
+      margin-bottom: 0;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .key-facts {
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .key-fact {
+      display: grid;
+      gap: 0.3rem;
+    }
+
+    .key-fact dt {
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.54);
+    }
+
+    .key-fact dd {
+      margin: 0;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .map-wrapper {
+      margin-top: 0.8rem;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      background: #000;
+      aspect-ratio: 4 / 3;
+    }
+
+    .map-frame {
+      border: 0;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .top-button {
+      justify-self: end;
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.12);
+      color: #fff2ec;
+      border-radius: 999px;
+      padding: 0.55rem 1.4rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
+    }
+
+    .top-button:hover,
+    .top-button:focus-visible {
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.22);
+      box-shadow: 0 18px 34px -24px rgba(0,0,0,0.6);
+      outline: none;
+    }
+
+    .top-button__icon {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+    }
+
+    .top-button__short {
+      display: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+    }
+
+    .page-footer {
+      margin-top: 2.75rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .toast {
+      position: fixed;
+      inset: auto 50% 2.2rem auto;
+      transform: translateX(50%) translateY(120%);
+      background: #201616;
+      color: #fff2ec;
+      padding: 0.85rem 1.35rem;
+      border-radius: 999px;
+      box-shadow: 0 20px 36px -24px rgba(0,0,0,0.55);
+      font-size: 0.92rem;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.is-active {
+      transform: translateX(50%) translateY(0);
+      opacity: 1;
+    }
+
+    .tour-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      pointer-events: auto;
+    }
+
+    .tour-layer[hidden] {
+      display: none;
+    }
+
+    .tour-spotlight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-radius: 24px;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.65);
+      border: 2px solid rgba(255,255,255,0.7);
+      transition: top 0.32s ease, left 0.32s ease, width 0.32s ease, height 0.32s ease, border-radius 0.32s ease, opacity 0.25s ease;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .tour-layer.is-active .tour-spotlight {
+      opacity: 1;
+    }
+
+    .tour-tooltip {
+      position: fixed;
+      bottom: clamp(16px, 8vh, 48px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(420px, calc(100% - 2.4rem));
+      background: rgba(32, 22, 22, 0.94);
+      color: #fff2ec;
+      border-radius: 20px;
+      padding: 1.25rem 1.4rem 1.35rem;
+      box-shadow: 0 24px 48px -32px rgba(0,0,0,0.75);
+      pointer-events: auto;
+      display: grid;
+      gap: 0.85rem;
+      outline: none;
+    }
+
+    .tour-tooltip:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.3);
+      outline-offset: 4px;
+    }
+
+    .tour-tooltip__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .tour-progress {
+      margin: 0;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.68);
+    }
+
+    .tour-close {
+      border: none;
+      background: rgba(255,255,255,0.12);
+      color: #fff2ec;
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .tour-close:hover,
+    .tour-close:focus-visible {
+      background: rgba(255,255,255,0.24);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .tour-title {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: 0.02em;
+    }
+
+    .tour-body {
+      margin: 0;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .tour-controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .tour-prev,
+    .tour-next {
+      flex: 1 1 0;
+      border-radius: 999px;
+      padding: 0.55rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.32);
+      background: rgba(255,255,255,0.08);
+      color: #fff2ec;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .tour-prev:hover,
+    .tour-prev:focus-visible,
+    .tour-next:hover,
+    .tour-next:focus-visible {
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-1px);
+      outline: none;
+      box-shadow: 0 18px 34px -28px rgba(0,0,0,0.65);
+    }
+
+    .tour-prev:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .tour-next.is-finish {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff8f1;
+    }
+
+    @media (min-width: 640px) {
+      body {
+        padding: 0 2.2rem 3.5rem;
+      }
+
+      .global-header {
+        padding: 2.2rem 0 1.4rem;
+      }
+
+      .hero {
+        padding: 2.9rem 2.8rem;
+      }
+
+      .hero__meta {
+        gap: 2.2rem;
+      }
+
+      .detail-block.two-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 2.2fr) minmax(260px, 1fr);
+      }
+
+      .fact-card {
+        position: sticky;
+        top: 2rem;
+        align-self: start;
+      }
+
+      .conflict-form {
+        grid-template-columns: minmax(0, 2.4fr) auto;
+        gap: 0.75rem 1rem;
+      }
+
+      .conflict-submit {
+        justify-self: start;
+        padding-inline: 1.6rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding: 0 2.8rem 4rem;
+      }
+
+      .hero {
+        padding: 3.2rem 3.4rem;
+      }
+
+      .hero__status {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        max-width: 100%;
+      }
+
+      .hero__status span {
+        font-size: 1rem;
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 2.6fr) minmax(320px, 1fr);
+        gap: 2rem;
+      }
+
+      .card {
+        padding: 2.1rem 2.25rem;
+      }
+
+      .timeline li {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .hero {
+        padding: 2.2rem 1.65rem;
+        border-radius: 20px;
+      }
+
+      .hero__top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero__notify-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .favorite-btn,
+      .tour-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .timeline::before {
+        left: 7px;
+      }
+
+      .timeline li {
+        padding-left: 1.9rem;
+      }
+
+      .toast {
+        inset: auto 1rem 1.5rem 1rem;
+        transform: translateY(120%);
+      }
+
+      .toast.is-active {
+        transform: translateY(0);
+      }
+
+      .conflict-submit {
+        justify-self: stretch;
+      }
+
+      .sandbox-actions,
+      .milestone-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .sandbox-run,
+      .sandbox-reset,
+      .milestone-refresh,
+      .milestone-copy-btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .top-button {
+        border-radius: 999px;
+        padding: 0.8rem;
+        width: 54px;
+        height: 54px;
+        justify-self: center;
+        justify-content: center;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+        letter-spacing: 0.16em;
+      }
+
+      .top-button__label {
+        display: none;
+      }
+
+      .top-button__icon {
+        display: none;
+      }
+
+      .top-button__short {
+        display: block;
+      }
+
+      .tour-tooltip {
+        border-radius: 18px;
+        padding: 1.1rem 1.1rem 1.2rem;
+        width: min(360px, calc(100% - 2rem));
+      }
+
+      .tour-controls {
+        flex-direction: column;
+      }
+
+      .tour-prev,
+      .tour-next {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body id="pageTop">
+  <div class="page">
+    <header class="global-header">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+          <li><a href="#" data-i18n="breadcrumbHome"></a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="#" data-i18n="breadcrumbCatalog"></a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" data-i18n="breadcrumbCurrent"></li>
+        </ol>
+      </nav>
+      <div class="header-actions">
+        <div class="language-switch" role="group" aria-label="語言切換">
+          <button type="button" class="lang-btn lang-btn--active" data-lang="zh" aria-pressed="true">繁體</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="favorite-btn" id="favoriteBtn" type="button" aria-pressed="false">
+          <span class="favorite-btn__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+              <path d="M12 20.5C11.7 20.5 11.4 20.42 11.16 20.26C8.18 18.23 5.7 15.96 4.04 13.56C2.24 10.94 2 8.04 3.33 5.95C4.13 4.71 5.42 3.9 6.92 3.71C8.37 3.53 9.88 3.98 11 4.94C11.31 5.21 11.65 5.53 12 5.9C12.35 5.53 12.69 5.21 13 4.94C14.12 3.98 15.63 3.53 17.08 3.71C18.58 3.9 19.87 4.71 20.67 5.95C22 8.04 21.76 10.94 19.96 13.56C18.3 15.96 15.82 18.23 12.84 20.26C12.6 20.42 12.3 20.5 12 20.5Z" stroke="#f37b6a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="favorite-btn__label" data-i18n="favoriteLabel"></span>
+        </button>
+        <button class="tour-btn" id="startTourBtn" type="button" aria-haspopup="dialog"></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="tour-hero">
+        <div class="hero__top">
+          <span class="hero__badge" data-i18n="heroBadge"></span>
+        </div>
+        <h1 data-i18n="courseName"></h1>
+        <p class="hero__subtitle" data-i18n="heroSubtitle"></p>
+        <div class="hero__meta">
+          <div class="hero__meta-item">
+            <span class="meta-label" data-i18n="heroCodeLabel"></span>
+            <span class="meta-value" data-i18n="courseCode"></span>
+          </div>
+          <div class="hero__meta-item">
+            <span class="meta-label" data-i18n="heroHoursLabel"></span>
+            <span class="meta-value" data-i18n="courseHours"></span>
+          </div>
+        </div>
+        <div class="hero__status">
+          <strong data-i18n="quotaStatus"></strong>
+          <span data-i18n="quotaNote"></span>
+        </div>
+        <button class="hero__notify-btn" id="notifyBtn" type="button" aria-pressed="false"></button>
+      </section>
+
+      <section class="main-grid">
+        <div class="main-column">
+          <article class="card intro-card">
+            <h2 data-i18n="overviewTitle"></h2>
+            <p class="lead" data-i18n="overviewLead"></p>
+          </article>
+
+          <article class="card detail-block">
+            <h2 data-i18n="objectiveTitle"></h2>
+            <p data-i18n="objective"></p>
+          </article>
+
+          <article class="card detail-block">
+            <h2 data-i18n="contentTitle"></h2>
+            <ul class="styled-list" data-i18n-list="contentItems"></ul>
+          </article>
+
+          <article class="card detail-block two-col">
+            <div>
+              <h2 data-i18n="assessmentTitle"></h2>
+              <p data-i18n="assessment"></p>
+            </div>
+            <div>
+              <h2 data-i18n="targetAudienceTitle"></h2>
+              <p data-i18n="targetAudience"></p>
+            </div>
+          </article>
+
+          <article class="card detail-block">
+            <h2 data-i18n="prerequisitesTitle"></h2>
+            <ul class="styled-list" data-i18n-list="prerequisitesItems"></ul>
+            <p class="note" data-i18n="prerequisitesNote"></p>
+          </article>
+
+          <article class="card detail-block" id="tour-schedule">
+            <h2 data-i18n="scheduleTitle"></h2>
+            <p data-i18n="scheduleLead"></p>
+            <ol class="timeline" id="scheduleSessions"></ol>
+          </article>
+
+          <article class="card detail-block schedule-tools" id="tour-tools">
+            <h2 data-i18n="scheduleToolsTitle"></h2>
+            <p data-i18n="scheduleToolsLead"></p>
+            <div class="calendar-download">
+              <button class="calendar-button" id="calendarBtn" type="button" data-i18n="calendarButton"></button>
+              <p class="calendar-note" data-i18n="calendarNote"></p>
+            </div>
+            <div class="conflict-checker">
+              <h3 data-i18n="conflictTitle"></h3>
+              <p data-i18n="conflictLead"></p>
+              <form class="conflict-form" id="conflictForm">
+                <div class="form-row">
+                  <label class="form-label" for="conflictCode" data-i18n="conflictCodeLabel"></label>
+                  <input class="form-input" type="text" id="conflictCode" name="conflictCode" data-i18n-placeholder="conflictCodePlaceholder" autocomplete="off">
+                </div>
+                <button class="conflict-submit" type="submit" data-i18n="conflictCheckBtn"></button>
+              </form>
+              <p class="conflict-hint" data-i18n="conflictHint"></p>
+              <div class="conflict-result" id="conflictResult" aria-live="polite"></div>
+            </div>
+          </article>
+
+          <article class="card detail-block feature-intro">
+            <h2 data-i18n="featuresTitle"></h2>
+            <p data-i18n="featuresLead"></p>
+          </article>
+
+          <article class="card detail-block feature-card feature-card--sandbox" id="tour-sandbox">
+            <h3 data-i18n="featureSandboxTitle"></h3>
+            <p data-i18n="featureSandboxDesc"></p>
+            <div class="sandbox-console">
+              <label class="sandbox-label" for="sandboxQuery" data-i18n="sandboxLabel"></label>
+              <textarea id="sandboxQuery" class="sandbox-input" spellcheck="false"></textarea>
+              <div class="sandbox-actions">
+                <button type="button" class="sandbox-run" id="sandboxRunBtn" data-i18n="sandboxRun"></button>
+                <button type="button" class="sandbox-reset" id="sandboxResetBtn" data-i18n="sandboxReset"></button>
+              </div>
+              <div class="sandbox-result" id="sandboxResult" aria-live="polite">
+                <div class="sandbox-placeholder" data-i18n="sandboxPlaceholder"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card detail-block feature-card feature-card--milestone" id="tour-milestone">
+            <h3 data-i18n="featureMilestoneTitle"></h3>
+            <p data-i18n="featureMilestoneDesc"></p>
+            <div class="milestone-copy">
+              <label for="milestoneCopy" class="milestone-label" data-i18n="milestoneLabel"></label>
+              <textarea id="milestoneCopy" class="milestone-textarea"></textarea>
+              <div class="milestone-actions">
+                <button type="button" class="milestone-refresh" id="milestoneRefreshBtn" data-i18n="milestoneRefreshBtn"></button>
+                <button type="button" class="milestone-copy-btn" id="milestoneCopyBtn" data-i18n="milestoneCopyBtn"></button>
+              </div>
+              <p class="milestone-note" data-i18n="milestoneNote"></p>
+              <p class="milestone-status" id="milestoneStatus" aria-live="polite"></p>
+            </div>
+          </article>
+
+          <article class="card detail-block">
+            <h2 data-i18n="breakdownTitle"></h2>
+            <ul class="styled-list" data-i18n-list="breakdownItems"></ul>
+          </article>
+
+          <section class="card detail-block checklist-section" aria-labelledby="checklist-heading">
+            <div class="checklist-header">
+              <h2 id="checklist-heading" data-i18n="checklistTitle"></h2>
+              <p data-i18n="checklistSubtitle"></p>
+            </div>
+            <ul class="checklist" id="checklist"></ul>
+          </section>
+
+          <article class="card detail-block">
+            <h2 data-i18n="instructorTitle"></h2>
+            <p data-i18n="instructorBio"></p>
+          </article>
+        </div>
+
+        <aside class="fact-card card" aria-labelledby="fact-heading" id="tour-facts">
+          <h2 id="fact-heading" data-i18n="factTitle"></h2>
+          <dl class="key-facts">
+            <div class="key-fact">
+              <dt data-i18n="teachingLanguageLabel"></dt>
+              <dd data-i18n="teachingLanguageValue"></dd>
+            </div>
+            <div class="key-fact">
+              <dt data-i18n="materialsLanguageLabel"></dt>
+              <dd data-i18n="materialsLanguageValue"></dd>
+            </div>
+            <div class="key-fact">
+              <dt data-i18n="hoursCardLabel"></dt>
+              <dd data-i18n="hoursCardValue"></dd>
+            </div>
+            <div class="key-fact">
+              <dt data-i18n="feeLabel"></dt>
+              <dd data-i18n="feeValue"></dd>
+            </div>
+            <div class="key-fact">
+              <dt data-i18n="locationLabel"></dt>
+              <dd>
+                <span data-i18n="locationValue"></span>
+                <div class="map-wrapper">
+                  <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3694.257360962986!2d113.53955124051748!3d22.192323679848695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34017aef38934035%3A0xe03d11f30d20d4ec!2z5pW456K85Yyv6bueLCDmvrPploDnlJ_nlKLlipvmmqjnp5HmioDovYnnp7vkuK3lv4M!5e0!3m2!1szh-TW!2smo!4v1760770654886!5m2!1szh-TW!2smo" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+              </dd>
+            </div>
+            <div class="key-fact">
+              <dt data-i18n="certificateLabel"></dt>
+              <dd data-i18n="certificateValue"></dd>
+            </div>
+            <div class="key-fact">
+              <dt data-i18n="pdacLabel"></dt>
+              <dd data-i18n="pdacValue"></dd>
+            </div>
+          </dl>
+          <button type="button" class="top-button" id="backToTopBtn">
+            <span class="top-button__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                <path d="M12 5l6 6M12 5l-6 6M12 5v14" stroke="#fff2ec" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="top-button__label" data-i18n="backToTopLabel"></span>
+            <span class="top-button__short" aria-hidden="true">TOP</span>
+          </button>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p data-i18n="footerNote"></p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="tour-layer" id="tourLayer" hidden aria-hidden="true">
+    <div class="tour-spotlight" id="tourSpotlight"></div>
+    <div class="tour-tooltip" id="tourTooltip" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourBody" tabindex="-1">
+      <div class="tour-tooltip__header">
+        <p class="tour-progress" id="tourProgress"></p>
+        <button type="button" class="tour-close" id="tourCloseBtn">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <h3 class="tour-title" id="tourTitle"></h3>
+      <p class="tour-body" id="tourBody"></p>
+      <div class="tour-controls">
+        <button type="button" class="tour-prev" id="tourPrevBtn"></button>
+        <button type="button" class="tour-next" id="tourNextBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const translations = {
+      zh: {
+        documentTitle: "SQL 語言入門｜課程詳情 - 澳門生產力中心",
+        breadcrumbHome: "首頁",
+        breadcrumbCatalog: "課程列表",
+        breadcrumbCurrent: "SQL 語言入門",
+        heroBadge: "資料庫 · SQL 初階",
+        courseName: "SQL 語言入門",
+        heroSubtitle: "掌握最普及的關係型資料庫查詢語言，為資料驅動應用奠定根基。",
+        heroCodeLabel: "課程編號",
+        heroHoursLabel: "學時",
+        courseCode: "CM429-11-2025-C",
+        courseHours: "18 小時 · 6 節",
+        quotaStatus: "18 名額 · 已滿",
+        quotaNote: "歡迎點擊下方按鈕登記候補通知。",
+        notifyButton: "加入候補提醒",
+        notifyButtonActive: "已設定候補提醒",
+        favoriteLabel: "收藏課程",
+        favoriteActiveLabel: "已收藏",
+        favoriteTooltip: "收藏課程",
+        overviewTitle: "課程導覽",
+        overviewLead: "SQL 是操作關係型資料庫的通用語言，本課程協助你快速掌握分析與開發所需的核心語法。",
+        objectiveTitle: "課程目標",
+        objective: "現今很多場合都會遇到需要使用資料庫存儲資料的情況，程式開發人員需要開發使用資料庫的程式，懂得基本的資料庫數據處理是程式員必須具備的能力。資料庫中使用最廣泛的是關係型資料庫，SQL 則是通用的關係型資料庫查詢語言，本課程將教導學員快速掌握 SQL 資料庫語言。",
+        contentTitle: "課程內容",
+        contentItems: [
+          "定義資料表",
+          "基本資料查詢、更新、刪除等操作",
+          "多資料表聯合查詢與子查詢",
+          "組合聯合條件及過濾條件",
+          "將查詢結果排序與分組",
+          "運用日期、統計等內建函數"
+        ],
+        assessmentTitle: "評核方式",
+        assessment: "班上練習、作業及測驗",
+        targetAudienceTitle: "適合報讀人士",
+        targetAudience: "軟件開發人員，以及需要操作關係型資料庫的各界人士",
+        prerequisitesTitle: "修讀條件",
+        prerequisitesItems: [
+          "熟練使用電腦（PC）及常用軟件",
+          "具備閱讀英文技術資料的能力",
+          "可自行檢查電腦環境與學習時間安排"
+        ],
+        prerequisitesNote: "報名前請完成自我檢查，確保裝置與時間符合上課需求。",
+        scheduleTitle: "課程時程",
+        scheduleLead: "18:45-21:45，2025 年 11 月 12 日至 11 月 28 日期間的每個星期三與星期五上課。",
+        scheduleSessions: [
+          "2025/11/12（週三）18:45-21:45",
+          "2025/11/14（週五）18:45-21:45",
+          "2025/11/19（週三）18:45-21:45",
+          "2025/11/21（週五）18:45-21:45",
+          "2025/11/26（週三）18:45-21:45",
+          "2025/11/28（週五）18:45-21:45"
+        ],
+        scheduleToolsTitle: "智慧日程工具",
+        scheduleToolsLead: "下載 CSI 行事曆檔立即加入提醒，並輸入其他課程編號快速檢查是否撞期。",
+        calendarButton: "下載 CSI 日程檔",
+        calendarNote: "（支援匯入 Google、Apple、Outlook 行事曆，立即建立上課提醒）",
+        conflictTitle: "課程代碼衝突比對",
+        conflictLead: "輸入已報名或已完成的其他課程編號，即可對比時間是否重疊。",
+        conflictCodeLabel: "課程編號",
+        conflictCodePlaceholder: "例如：CM429-11-2025-C",
+        conflictCheckBtn: "檢查是否衝突",
+        conflictHint: "支援輸入生產力中心任何課程編號進行時程比對。",
+        conflictResultIdle: "輸入課程編號，快速確認時程是否撞期。",
+        conflictResultInvalid: "請先輸入課程編號。",
+        conflictResultNotFound: "找不到課程編號「{code}」，請確認輸入或稍後再試。",
+        conflictResultNoConflict: "太好了！與「{otherCourse}」沒有時間衝突。",
+        conflictResultConflict: "提醒：課程「{otherCourse}」的時段 {otherSession} 與本課的 {thisSession} 重疊。",
+        featuresTitle: "特色功能亮點",
+        featuresLead: "從日程管理、衝突比對到 SQL 練功與成果分享，幫你快速掌握學習節奏並放大成效。",
+        featureSandboxTitle: "SQL 線上練功房",
+        featureSandboxDesc: "啟動互動式 SQL 沙盒，輸入查詢立即查看示範資料結果，感受即時批改的學習體驗。",
+        sandboxLabel: "請輸入 SQL 指令",
+        sandboxRun: "執行查詢",
+        sandboxReset: "恢復示範",
+        sandboxPlaceholder: "試試輸入：SELECT * FROM SANDBOX_ENROLLMENTS; 或查看候補狀態的查詢。",
+        sandboxDefaultQuery: "SELECT * FROM sandbox_enrollments;",
+        sandboxErrorEmpty: "請先輸入想執行的 SQL。",
+        sandboxErrorUnknown: "目前沙盒僅支援對 SANDBOX_ENROLLMENTS 的示範查詢，請參考上方提示再試。",
+        sandboxColMember: "成員",
+        sandboxColStatus: "狀態",
+        sandboxColSeats: "席次",
+        sandboxColCount: "人數",
+        sandboxResultTitleAll: "SANDBOX_ENROLLMENTS（示範資料）",
+        sandboxResultTitleStatus: "成員與狀態概覽",
+        sandboxResultTitleCount: "已確認席次統計",
+        sandboxStatusConfirmed: "已確認",
+        sandboxStatusPending: "待審核",
+        sandboxStatusWaitlist: "候補中",
+        featureMilestoneTitle: "技能里程碑追蹤板",
+        featureMilestoneDesc: "完成模組後自動產生技能徽章素材與 LinkedIn 分享草稿，立即向職場展示學習成果。",
+        milestoneLabel: "LinkedIn 分享草稿",
+        milestoneRefreshBtn: "重新產生文案",
+        milestoneCopyBtn: "複製到剪貼簿",
+        milestoneNote: "貼上 LinkedIn 後可視需要調整標籤、加上學習成果連結。",
+        milestoneStatusRefreshed: "已更新最新的參考文案。",
+        milestoneStatusCopied: "已複製到剪貼簿！",
+        milestoneStatusCopyError: "瀏覽器不支援自動複製，請手動選取文字（Ctrl/Cmd + C）。",
+        milestoneStatusCustom: "已套用自訂內容。",
+        milestoneToastCopied: "LinkedIn 分享文案已複製。",
+        milestoneToastCopyError: "請手動複製文字，瀏覽器未授權剪貼簿。",
+        breakdownTitle: "能力進階建議",
+        breakdownItems: [
+          "完成本課後，可考慮報讀「SQL 性能優化」或「數據可視化入門」。",
+          "將 SQL 技巧配合 Python 或 Power BI，在工作中快速建立資料洞察。",
+          "善用課後練習與導師建議，建立自己的查詢範本庫。"
+        ],
+        checklistTitle: "開課前準備清單",
+        checklistSubtitle: "完成以下步驟，讓你在課堂上專注學習。",
+        instructorTitle: "導師介紹",
+        instructorBio: "Python 基礎、資料處理與統計講師，專精於 AI Prompt Engineering 教學。微軟認證講師（MCT）與 Oracle 認證專家（OCP），同時持有 MCITP、CCNA 及 ITIL v3 等多項專業資格。自 2004 年起從事教學工作，具備豐富的硬體與網絡故障排除經驗，以成果為導向提升學員的技術能力與實務應用。",
+        factTitle: "關鍵資訊",
+        teachingLanguageLabel: "授課語言",
+        teachingLanguageValue: "廣東話（輔以英語）",
+        materialsLanguageLabel: "派發資料語言",
+        materialsLanguageValue: "英文講義（部分為中文）",
+        hoursCardLabel: "課程學時",
+        hoursCardValue: "18 小時 · 6 節",
+        feeLabel: "學費",
+        feeValue: "澳門幣 1,000",
+        locationLabel: "上課地點",
+        locationValue: "數碼匯點（澳門南灣馬統領街廠商會大廈 3 樓）",
+        certificateLabel: "證書",
+        certificateValue: "出席率達 80% 並通過各項評核，可獲生產力中心發出的修業／優異證書。",
+        pdacLabel: "PDAC 課程編號",
+        pdacValue: "特區政府「持續進修發展計劃」批准課程，編號 2504150052-0",
+        footerNote: "© 澳門生產力暨科技轉移中心 · 課程資訊以最新公告為準。",
+        favoriteToastAdd: "已將「SQL 語言入門」加入收藏。",
+        favoriteToastRemove: "已從收藏清單移除。",
+        notifyToastAdd: "我們會於課程再次開放時發送候補提醒。",
+        notifyToastRemove: "已取消候補提醒設定。",
+        calendarToast: "CSI 行事曆檔已下載，歡迎匯入你的日程工具。",
+        backToTopLabel: "回到最頂",
+        tourButton: "啟動導覽",
+        tourStepPrev: "上一步",
+        tourStepNext: "下一步",
+        tourStepFinish: "完成導覽",
+        tourStepClose: "跳過導覽",
+        tourProgress: "步驟 {current} / {total}",
+        tourStep1Title: "課程速覽",
+        tourStep1Body: "在這裡掌握課程名稱、編號與席位狀態，並可立即設定候補提醒。",
+        tourStep2Title: "課程時程",
+        tourStep2Body: "查看每節課的日期與時間，讓整體學習安排一目了然。",
+        tourStep3Title: "智慧日程工具",
+        tourStep3Body: "下載 CSI 行事曆或使用課程代碼衝突比對，輕鬆確認是否撞期。",
+        tourStep4Title: "SQL 線上練功房",
+        tourStep4Body: "輸入示範查詢感受即時批改，評估課程內容是否符合期待。",
+        tourStep5Title: "LinkedIn 分享草稿",
+        tourStep5Body: "完成課程後可快速產生分享文案，向職場展示成果。",
+        tourStep6Title: "關鍵資訊",
+        tourStep6Body: "最後回顧語言、地點與費用等重點，做好報名前的準備。"
+      },
+      en: {
+        documentTitle: "SQL Language Fundamentals | Course Details - CPTTM",
+        breadcrumbHome: "Home",
+        breadcrumbCatalog: "Course Catalogue",
+        breadcrumbCurrent: "SQL Language Fundamentals",
+        heroBadge: "Databases · SQL Beginner",
+        courseName: "SQL Language Fundamentals",
+        heroSubtitle: "Build the essential skills to query relational databases and power data-driven applications.",
+        heroCodeLabel: "Course Code",
+        heroHoursLabel: "Duration",
+        courseCode: "CM429-11-2025-C",
+        courseHours: "18 hours · 6 sessions",
+        quotaStatus: "18 seats · Fully booked",
+        quotaNote: "Join the alert below to stay informed when seats reopen.",
+        notifyButton: "Join waitlist alert",
+        notifyButtonActive: "Waitlist alert on",
+        favoriteLabel: "Save course",
+        favoriteActiveLabel: "Saved",
+        favoriteTooltip: "Save course",
+        overviewTitle: "Course Overview",
+        overviewLead: "SQL is the universal language for relational databases. Get hands-on quickly with the commands developers use every day.",
+        objectiveTitle: "Learning Goals",
+        objective: "Database-backed applications are everywhere. Developers must understand how to process data efficiently. With relational databases at the core of most systems, SQL remains the standard query language. This course guides you through the essential SQL skills to build and manage data-driven solutions with confidence.",
+        contentTitle: "Topics Covered",
+        contentItems: [
+          "Defining relational tables",
+          "Selecting, updating, and deleting data",
+          "Joining multiple tables and composing subqueries",
+          "Combining logical operators and filters",
+          "Sorting and grouping query results",
+          "Applying built-in functions such as date and aggregate functions"
+        ],
+        assessmentTitle: "Assessment",
+        assessment: "In-class exercises, assignments, and a quiz",
+        targetAudienceTitle: "Who Should Attend",
+        targetAudience: "Software developers and professionals who need to work with relational databases",
+        prerequisitesTitle: "Prerequisites",
+        prerequisitesItems: [
+          "Comfortable using a PC and common productivity software",
+          "Able to read technical materials in English",
+          "Complete a self-check on device readiness and schedule"
+        ],
+        prerequisitesNote: "Please complete the self-check before enrolling to ensure you can attend every session smoothly.",
+        scheduleTitle: "Schedule",
+        scheduleLead: "Classes run 18:45-21:45 every Wednesday and Friday from 12 to 28 November 2025.",
+        scheduleSessions: [
+          "12 Nov 2025 (Wed) 18:45-21:45",
+          "14 Nov 2025 (Fri) 18:45-21:45",
+          "19 Nov 2025 (Wed) 18:45-21:45",
+          "21 Nov 2025 (Fri) 18:45-21:45",
+          "26 Nov 2025 (Wed) 18:45-21:45",
+          "28 Nov 2025 (Fri) 18:45-21:45"
+        ],
+        scheduleToolsTitle: "Smart Schedule Toolkit",
+        scheduleToolsLead: "Download the CSI calendar file for instant reminders, then enter another course code to check for clashes instantly.",
+        calendarButton: "Download CSI calendar",
+        calendarNote: "(Compatible with Google, Apple, and Outlook calendars for one-click reminders.)",
+        conflictTitle: "Course Code Clash Checker",
+        conflictLead: "Enter any other CPTTM course code you’ve taken or booked to see if the schedules overlap.",
+        conflictCodeLabel: "Course code",
+        conflictCodePlaceholder: "e.g. CM510-12-2025-A",
+        conflictCheckBtn: "Check for clashes",
+        conflictHint: "Provide a CPTTM course code to compare timetables in seconds.",
+        conflictResultIdle: "Enter a course code to verify availability.",
+        conflictResultInvalid: "Please provide a course code first.",
+        conflictResultNotFound: "We couldn’t find “{code}”. Double-check the code or try again later.",
+        conflictResultNoConflict: "Great! There’s no clash with {otherCourse}.",
+        conflictResultConflict: "Heads up: {otherCourse} session {otherSession} overlaps with our session {thisSession}.",
+        featuresTitle: "Signature Features",
+        featuresLead: "From smart scheduling and clash detection to SQL practice and shareable wins, every tool accelerates your learning journey.",
+        featureSandboxTitle: "SQL Practice Playground",
+        featureSandboxDesc: "Launch the interactive SQL sandbox, run demo queries, and see instant feedback before you commit to the course.",
+        sandboxLabel: "Enter an SQL statement",
+        sandboxRun: "Run query",
+        sandboxReset: "Reset sample",
+        sandboxPlaceholder: "Try: SELECT * FROM SANDBOX_ENROLLMENTS; or explore the waitlist count query.",
+        sandboxDefaultQuery: "SELECT * FROM sandbox_enrollments;",
+        sandboxErrorEmpty: "Enter an SQL statement to run.",
+        sandboxErrorUnknown: "This sandbox currently supports demo queries on SANDBOX_ENROLLMENTS only. Please try one of the sample statements.",
+        sandboxColMember: "Member",
+        sandboxColStatus: "Status",
+        sandboxColSeats: "Seats",
+        sandboxColCount: "Count",
+        sandboxResultTitleAll: "SANDBOX_ENROLLMENTS (demo data)",
+        sandboxResultTitleStatus: "Members and statuses",
+        sandboxResultTitleCount: "Confirmed seat tally",
+        sandboxStatusConfirmed: "Confirmed",
+        sandboxStatusPending: "Pending review",
+        sandboxStatusWaitlist: "Waitlisted",
+        featureMilestoneTitle: "Skill Milestone Tracker",
+        featureMilestoneDesc: "Turn each module into a shareable badge and LinkedIn-ready copy that spotlights your fresh SQL skills.",
+        milestoneLabel: "LinkedIn post draft",
+        milestoneRefreshBtn: "Generate new copy",
+        milestoneCopyBtn: "Copy to clipboard",
+        milestoneNote: "Paste into LinkedIn and fine-tune hashtags or links before publishing.",
+        milestoneStatusRefreshed: "Generated a fresh share copy.",
+        milestoneStatusCopied: "Copied to clipboard!",
+        milestoneStatusCopyError: "Clipboard copy not available; please select the text manually (Ctrl/Cmd + C).",
+        milestoneStatusCustom: "Custom copy detected.",
+        milestoneToastCopied: "LinkedIn copy is ready to paste.",
+        milestoneToastCopyError: "Clipboard access was denied; copy manually instead.",
+        breakdownTitle: "Next Steps",
+        breakdownItems: [
+          "After this course, explore “SQL Performance Tuning” or “Data Visualisation Basics”.",
+          "Pair SQL with Python or Power BI to accelerate insights at work.",
+          "Create a reusable library of queries with feedback from the instructor."
+        ],
+        checklistTitle: "Pre-class Checklist",
+        checklistSubtitle: "Tick these off so you are ready to learn from day one.",
+        instructorTitle: "Instructor",
+        instructorBio: "Instructor for Python fundamentals, data processing, and statistics, specialising in AI Prompt Engineering. Microsoft Certified Trainer (MCT) and Oracle Certified Professional (OCP) with MCITP, CCNA, and ITIL v3 credentials. Teaching since 2004 with extensive hardware and network troubleshooting experience, focused on outcome-driven learning.",
+        factTitle: "Key Facts",
+        teachingLanguageLabel: "Instruction",
+        teachingLanguageValue: "Cantonese with English support",
+        materialsLanguageLabel: "Materials",
+        materialsLanguageValue: "English handouts (selected content in Chinese)",
+        hoursCardLabel: "Duration",
+        hoursCardValue: "18 hours · 6 sessions",
+        feeLabel: "Tuition",
+        feeValue: "MOP 1,000",
+        locationLabel: "Venue",
+        locationValue: "Digital Hub (3/F, CPTTM Building, Rua do Dr. Pedro José Lobo, Macau)",
+        certificateLabel: "Certificate",
+        certificateValue: "Attend at least 80% of classes and pass assessments to receive a CPTTM Certificate of Attendance/Achievement.",
+        pdacLabel: "PDAC Code",
+        pdacValue: "Approved under the Continuing Education Development Plan, Code 2504150052-0",
+        footerNote: "© CPTTM · Information subject to final announcements.",
+        favoriteToastAdd: "\"SQL Language Fundamentals\" has been saved.",
+        favoriteToastRemove: "Removed from your saved courses.",
+        notifyToastAdd: "We'll alert you when seats reopen.",
+        notifyToastRemove: "Waitlist alert cancelled.",
+        calendarToast: "CSI calendar file downloaded. Import it to your planner now.",
+        backToTopLabel: "Back to top",
+        tourButton: "Start guided tour",
+        tourStepPrev: "Back",
+        tourStepNext: "Next",
+        tourStepFinish: "Finish tour",
+        tourStepClose: "Skip tour",
+        tourProgress: "Step {current} of {total}",
+        tourStep1Title: "Course snapshot",
+        tourStep1Body: "Review the course name, code, and seat status. You can enable the waitlist alert instantly.",
+        tourStep2Title: "Session timeline",
+        tourStep2Body: "Check every lesson’s date and time so your learning plan stays on track.",
+        tourStep3Title: "Smart schedule tools",
+        tourStep3Body: "Download the CSI calendar or run a clash check with another course code in seconds.",
+        tourStep4Title: "SQL playground",
+        tourStep4Body: "Run sample queries in the sandbox and experience real-time feedback before class begins.",
+        tourStep5Title: "LinkedIn draft helper",
+        tourStep5Body: "Generate a ready-to-post LinkedIn update that showcases your new SQL milestone.",
+        tourStep6Title: "Key facts recap",
+        tourStep6Body: "Confirm the language, venue, and tuition details so you’re ready to enrol confidently."
+      }
+    };
+
+    const checklistItems = [
+      {
+        id: "install-client",
+        zh: "安裝 SQL 用戶端或確認可連線至練習資料庫",
+        en: "Install an SQL client or confirm access to the practice database"
+      },
+      {
+        id: "review-basics",
+        zh: "複習資料表、欄位、主鍵等基礎概念",
+        en: "Review foundational concepts such as tables, columns, and keys"
+      },
+      {
+        id: "prepare-questions",
+        zh: "列出兩個工作中實際遇到的資料查詢問題，課堂帶來討論",
+        en: "Prepare two real-world data questions to discuss during class"
+      },
+      {
+        id: "setup-laptop",
+        zh: "攜帶可上網的筆記本電腦與電源供應器",
+        en: "Bring an internet-ready laptop and power adapter"
+      },
+      {
+        id: "plan-study",
+        zh: "預留每節課後 30 分鐘整理筆記並完成練習",
+        en: "Block 30 minutes after each session to review notes and exercises"
+      }
+    ];
+
+    const courseSessions = [
+      {
+        start: "2025-11-12T18:45:00+08:00",
+        end: "2025-11-12T21:45:00+08:00",
+        labelZh: "2025/11/12（週三）18:45-21:45",
+        labelEn: "12 Nov 2025 (Wed) 18:45-21:45"
+      },
+      {
+        start: "2025-11-14T18:45:00+08:00",
+        end: "2025-11-14T21:45:00+08:00",
+        labelZh: "2025/11/14（週五）18:45-21:45",
+        labelEn: "14 Nov 2025 (Fri) 18:45-21:45"
+      },
+      {
+        start: "2025-11-19T18:45:00+08:00",
+        end: "2025-11-19T21:45:00+08:00",
+        labelZh: "2025/11/19（週三）18:45-21:45",
+        labelEn: "19 Nov 2025 (Wed) 18:45-21:45"
+      },
+      {
+        start: "2025-11-21T18:45:00+08:00",
+        end: "2025-11-21T21:45:00+08:00",
+        labelZh: "2025/11/21（週五）18:45-21:45",
+        labelEn: "21 Nov 2025 (Fri) 18:45-21:45"
+      },
+      {
+        start: "2025-11-26T18:45:00+08:00",
+        end: "2025-11-26T21:45:00+08:00",
+        labelZh: "2025/11/26（週三）18:45-21:45",
+        labelEn: "26 Nov 2025 (Wed) 18:45-21:45"
+      },
+      {
+        start: "2025-11-28T18:45:00+08:00",
+        end: "2025-11-28T21:45:00+08:00",
+        labelZh: "2025/11/28（週五）18:45-21:45",
+        labelEn: "28 Nov 2025 (Fri) 18:45-21:45"
+      }
+    ];
+
+    const otherCourses = [
+      {
+        code: "CM510-12-2025-A",
+        nameZh: "Python 資料分析進階",
+        nameEn: "Python Data Analysis Advanced",
+        sessions: [
+          {
+            start: "2025-12-02T19:00:00+08:00",
+            end: "2025-12-02T22:00:00+08:00",
+            labelZh: "2025/12/02（週二）19:00-22:00",
+            labelEn: "02 Dec 2025 (Tue) 19:00-22:00"
+          },
+          {
+            start: "2025-12-05T19:00:00+08:00",
+            end: "2025-12-05T22:00:00+08:00",
+            labelZh: "2025/12/05（週五）19:00-22:00",
+            labelEn: "05 Dec 2025 (Fri) 19:00-22:00"
+          }
+        ]
+      },
+      {
+        code: "AI615-11-2025-C",
+        nameZh: "AI 應用與自動化實務",
+        nameEn: "AI Automation in Practice",
+        sessions: [
+          {
+            start: "2025-11-14T18:30:00+08:00",
+            end: "2025-11-14T21:30:00+08:00",
+            labelZh: "2025/11/14（週五）18:30-21:30",
+            labelEn: "14 Nov 2025 (Fri) 18:30-21:30"
+          },
+          {
+            start: "2025-11-21T18:30:00+08:00",
+            end: "2025-11-21T21:30:00+08:00",
+            labelZh: "2025/11/21（週五）18:30-21:30",
+            labelEn: "21 Nov 2025 (Fri) 18:30-21:30"
+          }
+        ]
+      },
+      {
+        code: "WD230-10-2025-B",
+        nameZh: "全端網頁開發夜間班",
+        nameEn: "Full-stack Web Dev (Evening)",
+        sessions: [
+          {
+            start: "2025-10-15T19:00:00+08:00",
+            end: "2025-10-15T22:00:00+08:00",
+            labelZh: "2025/10/15（週三）19:00-22:00",
+            labelEn: "15 Oct 2025 (Wed) 19:00-22:00"
+          },
+          {
+            start: "2025-10-17T19:00:00+08:00",
+            end: "2025-10-17T22:00:00+08:00",
+            labelZh: "2025/10/17（週五）19:00-22:00",
+            labelEn: "17 Oct 2025 (Fri) 19:00-22:00"
+          }
+        ]
+      },
+      {
+        code: "PM300-12-2025-A",
+        nameZh: "敏捷專案管理實務",
+        nameEn: "Agile Project Management Workshop",
+        sessions: [
+          {
+            start: "2025-12-09T14:00:00+08:00",
+            end: "2025-12-09T18:00:00+08:00",
+            labelZh: "2025/12/09（週二）14:00-18:00",
+            labelEn: "09 Dec 2025 (Tue) 14:00-18:00"
+          },
+          {
+            start: "2025-12-11T14:00:00+08:00",
+            end: "2025-12-11T18:00:00+08:00",
+            labelZh: "2025/12/11（週四）14:00-18:00",
+            labelEn: "11 Dec 2025 (Thu) 14:00-18:00"
+          }
+        ]
+      }
+    ];
+
+    const sandboxMembers = [
+      {
+        id: "leong",
+        seats: 1,
+        status: "pending",
+        nameZh: "梁小姐（HR）",
+        nameEn: "Ms. Leong (HR)"
+      },
+      {
+        id: "wong",
+        seats: 1,
+        status: "confirmed",
+        nameZh: "黃先生（工程）",
+        nameEn: "Mr. Wong (Engineering)"
+      },
+      {
+        id: "chan",
+        seats: 1,
+        status: "waitlist",
+        nameZh: "陳主任（資訊）",
+        nameEn: "Ms. Chan (IT Office)"
+      },
+      {
+        id: "sou",
+        seats: 1,
+        status: "confirmed",
+        nameZh: "蘇小姐（營運）",
+        nameEn: "Ms. Sou (Operations)"
+      }
+    ];
+
+    const milestoneTemplates = {
+      zh: [
+        "#SQL技能里程碑 🎯\n\n完成 {course}（{code}），六晚把 SELECT、JOIN 到聚合函數一次掌握。智慧日程工具與沙盒練功讓學習節奏超順。\n\n感謝 CPTTM 導師的實務指引，下一步準備挑戰進階課。#CPTTM #SQL #資料庫",
+        "我在 {course}（課程代碼 {code}）取得新的技能徽章！透過 SQL 線上練功房與 LinkedIn 分享草稿，讓成果即時曝光。\n\n歡迎連結交流資料庫應用經驗，也推薦你試試智慧日程功能。#CareerGrowth #SQL #Macau"
+      ],
+      en: [
+        "#SQLMilestone 🎯\n\nWrapped up {course} ({code})—six evenings mastering SELECT, JOIN, and aggregations. The smart schedule tools and sandbox made every session count.\n\nHuge thanks to CPTTM’s instructor for the hands-on coaching. Onward to advanced analytics! #CPTTM #SQL #DataSkills",
+        "Proud to earn a fresh badge from {course} ({code}). With the SQL playground and ready-to-post LinkedIn draft, sharing progress feels effortless.\n\nLet’s connect if you’re exploring SQL-driven automation ideas. #CareerGrowth #SQL #Learning"
+      ]
+    };
+
+    const sandboxQueryHandlers = {
+      "SELECT * FROM SANDBOX_ENROLLMENTS": buildSandboxResultAll,
+      "SELECT MEMBER, STATUS FROM SANDBOX_ENROLLMENTS": buildSandboxResultStatus,
+      "SELECT COUNT(*) FROM SANDBOX_ENROLLMENTS WHERE STATUS = 'CONFIRMED'": buildSandboxResultCount
+    };
+
+    const tourStepsConfig = [
+      { selector: "#tour-hero", titleKey: "tourStep1Title", bodyKey: "tourStep1Body" },
+      { selector: "#tour-schedule", titleKey: "tourStep2Title", bodyKey: "tourStep2Body" },
+      { selector: "#tour-tools", titleKey: "tourStep3Title", bodyKey: "tourStep3Body" },
+      { selector: "#tour-sandbox", titleKey: "tourStep4Title", bodyKey: "tourStep4Body" },
+      { selector: "#tour-milestone", titleKey: "tourStep5Title", bodyKey: "tourStep5Body" },
+      { selector: "#tour-facts", titleKey: "tourStep6Title", bodyKey: "tourStep6Body" }
+    ];
+
+    let currentLang = "zh";
+    let favoriteState = localStorage.getItem("sql_course_favorite") === "true";
+    let notifyState = localStorage.getItem("sql_course_notify") === "true";
+    const checklistState = JSON.parse(localStorage.getItem("sql_course_checklist") || "{}");
+    let conflictState = { status: "idle", sessionIndex: null, otherCourse: null, otherSessionIndex: null, code: "" };
+    let sandboxPristine = true;
+    let lastSandboxResultType = "placeholder";
+    let lastSandboxQueryKey = null;
+    let lastSandboxErrorCode = null;
+    let milestoneDirty = false;
+    let milestoneInitialized = false;
+    let currentMilestoneIndex = 0;
+    let tourActive = false;
+    let currentTourIndex = 0;
+    let currentTourTarget = null;
+    let tourScrollTimeout = null;
+
+    const langButtons = document.querySelectorAll(".lang-btn");
+    const favoriteBtn = document.getElementById("favoriteBtn");
+    const notifyBtn = document.getElementById("notifyBtn");
+    const toastEl = document.getElementById("toast");
+    const checklistEl = document.getElementById("checklist");
+    const scheduleListEl = document.getElementById("scheduleSessions");
+    const calendarBtn = document.getElementById("calendarBtn");
+    const conflictForm = document.getElementById("conflictForm");
+    const conflictResultEl = document.getElementById("conflictResult");
+    const conflictCodeInput = document.getElementById("conflictCode");
+    const sandboxQueryInput = document.getElementById("sandboxQuery");
+    const sandboxRunBtn = document.getElementById("sandboxRunBtn");
+    const sandboxResetBtn = document.getElementById("sandboxResetBtn");
+    const sandboxResultEl = document.getElementById("sandboxResult");
+    const milestoneCopyEl = document.getElementById("milestoneCopy");
+    const milestoneRefreshBtn = document.getElementById("milestoneRefreshBtn");
+    const milestoneCopyBtn = document.getElementById("milestoneCopyBtn");
+    const milestoneStatusEl = document.getElementById("milestoneStatus");
+    const backToTopBtn = document.getElementById("backToTopBtn");
+    const startTourBtn = document.getElementById("startTourBtn");
+    const tourLayer = document.getElementById("tourLayer");
+    const tourSpotlight = document.getElementById("tourSpotlight");
+    const tourTooltip = document.getElementById("tourTooltip");
+    const tourTitleEl = document.getElementById("tourTitle");
+    const tourBodyEl = document.getElementById("tourBody");
+    const tourPrevBtn = document.getElementById("tourPrevBtn");
+    const tourNextBtn = document.getElementById("tourNextBtn");
+    const tourCloseBtn = document.getElementById("tourCloseBtn");
+    const tourProgressEl = document.getElementById("tourProgress");
+
+    function applyTranslations() {
+      const t = translations[currentLang];
+      document.documentElement.lang = currentLang === "zh" ? "zh-Hant" : "en";
+      document.title = t.documentTitle;
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        if (t[key] !== undefined) {
+          el.textContent = t[key];
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-list]").forEach(el => {
+        const key = el.dataset.i18nList;
+        const items = t[key];
+        if (Array.isArray(items)) {
+          el.innerHTML = items.map(item => `<li>${item}</li>`).join("");
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (t[key] !== undefined) {
+          el.setAttribute("placeholder", t[key]);
+        }
+      });
+
+      if (backToTopBtn) {
+        backToTopBtn.setAttribute("aria-label", t.backToTopLabel);
+      }
+
+      renderSchedule(t.scheduleSessions);
+      renderChecklist();
+      renderConflictResult();
+      updateFavoriteButton();
+      updateNotifyButton();
+      updateSandboxDefaultQuery();
+      refreshSandboxResult();
+      initializeMilestoneCopy();
+      updateTourLocalizedTexts();
+      if (tourActive) {
+        showTourStep(currentTourIndex, { scroll: false });
+      }
+    }
+
+    function renderSchedule(sessions) {
+      if (!scheduleListEl) return;
+      scheduleListEl.innerHTML = sessions.map(item => `<li>${item}</li>`).join("");
+    }
+
+    function renderChecklist() {
+      if (!checklistEl) return;
+      checklistEl.innerHTML = "";
+      checklistItems.forEach(item => {
+        const isDone = Boolean(checklistState[item.id]);
+        const text = currentLang === "zh" ? item.zh : item.en;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `checklist__toggle${isDone ? " is-done" : ""}`;
+        button.dataset.itemId = item.id;
+        button.setAttribute("aria-pressed", String(isDone));
+        button.innerHTML = `
+          <span class="checklist__box">
+            ${getCheckIcon(isDone)}
+          </span>
+          <span class="checklist__label">${text}</span>
+        `;
+        const li = document.createElement("li");
+        li.className = "checklist__item";
+        li.appendChild(button);
+        checklistEl.appendChild(li);
+      });
+    }
+
+    function renderConflictResult() {
+      if (!conflictResultEl) return;
+      const t = translations[currentLang];
+      conflictResultEl.className = "conflict-result";
+      let message = t.conflictResultIdle;
+
+      if (conflictState.status === "invalid") {
+        conflictResultEl.classList.add("is-error");
+        message = t.conflictResultInvalid;
+      } else if (conflictState.status === "not-found") {
+        conflictResultEl.classList.add("is-error");
+        message = t.conflictResultNotFound.replace("{code}", conflictState.code || "");
+      } else if (conflictState.status === "no-conflict") {
+        conflictResultEl.classList.add("is-success");
+        const otherCourseName = getCourseDisplayName(conflictState.otherCourse);
+        message = t.conflictResultNoConflict.replace("{otherCourse}", otherCourseName);
+      } else if (conflictState.status === "conflict") {
+        conflictResultEl.classList.add("is-alert");
+        const otherCourseName = getCourseDisplayName(conflictState.otherCourse);
+        const otherSessionLabel = getOtherSessionLabel(conflictState.otherCourse, conflictState.otherSessionIndex);
+        const thisSessionLabel = getSessionLabel(conflictState.sessionIndex);
+        message = t.conflictResultConflict
+          .replace("{otherCourse}", otherCourseName)
+          .replace("{otherSession}", otherSessionLabel)
+          .replace("{thisSession}", thisSessionLabel);
+      }
+
+      conflictResultEl.textContent = message;
+    }
+
+    function getCourseDisplayName(course) {
+      if (!course) return "";
+      const name = currentLang === "zh" ? course.nameZh : course.nameEn;
+      return `${course.code}｜${name}`;
+    }
+
+    function getSessionLabel(index) {
+      if (index == null || index < 0 || index >= courseSessions.length) return "";
+      return currentLang === "zh" ? courseSessions[index].labelZh : courseSessions[index].labelEn;
+    }
+
+    function getOtherSessionLabel(course, index) {
+      if (!course || index == null || index < 0 || index >= course.sessions.length) return "";
+      return currentLang === "zh" ? course.sessions[index].labelZh : course.sessions[index].labelEn;
+    }
+
+    function getCheckIcon(isChecked) {
+      return `
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="6" stroke="${isChecked ? "#fff5f1" : "#f37b6a"}" stroke-width="2" fill="${isChecked ? "#f37b6a" : "none"}"></rect>
+          ${isChecked ? `<path d="M8 12.5l3 3 5-6" stroke="#fff5f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>` : ""}
+        </svg>
+      `;
+    }
+
+    function updateFavoriteButton() {
+      if (!favoriteBtn) return;
+      const t = translations[currentLang];
+      favoriteBtn.setAttribute("aria-pressed", String(favoriteState));
+      favoriteBtn.querySelector(".favorite-btn__label").textContent = favoriteState ? t.favoriteActiveLabel : t.favoriteLabel;
+      favoriteBtn.title = t.favoriteTooltip;
+      const iconPath = favoriteBtn.querySelector("path");
+      if (iconPath) {
+        iconPath.setAttribute("fill", favoriteState ? "#f37b6a" : "none");
+        iconPath.setAttribute("stroke", favoriteState ? "#fff5f1" : "#f37b6a");
+      }
+    }
+
+    function updateNotifyButton() {
+      if (!notifyBtn) return;
+      const t = translations[currentLang];
+      notifyBtn.textContent = notifyState ? t.notifyButtonActive : t.notifyButton;
+      notifyBtn.setAttribute("aria-pressed", String(notifyState));
+      notifyBtn.style.background = notifyState ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.92)";
+      notifyBtn.style.color = notifyState ? "#7c2d58" : "#f37b6a";
+    }
+
+    function updateSandboxDefaultQuery() {
+      if (!sandboxQueryInput) return;
+      const defaultQuery = translations[currentLang].sandboxDefaultQuery;
+      if (sandboxPristine || !sandboxQueryInput.value.trim()) {
+        sandboxQueryInput.value = defaultQuery;
+        sandboxPristine = true;
+      }
+    }
+
+    function refreshSandboxResult() {
+      if (!sandboxResultEl) return;
+      if (lastSandboxResultType === "placeholder") {
+        showSandboxPlaceholder();
+      } else if (lastSandboxResultType === "success" && lastSandboxQueryKey) {
+        const handler = sandboxQueryHandlers[lastSandboxQueryKey];
+        if (typeof handler === "function") {
+          const result = handler();
+          renderSandboxSuccess(result);
+        } else {
+          showSandboxPlaceholder();
+        }
+      } else if (lastSandboxResultType === "error" && lastSandboxErrorCode) {
+        renderSandboxError(lastSandboxErrorCode);
+      } else {
+        showSandboxPlaceholder();
+      }
+    }
+
+    function showSandboxPlaceholder() {
+      if (!sandboxResultEl) return;
+      const t = translations[currentLang];
+      sandboxResultEl.innerHTML = "";
+      const placeholder = document.createElement("div");
+      placeholder.className = "sandbox-placeholder";
+      placeholder.textContent = t.sandboxPlaceholder;
+      sandboxResultEl.appendChild(placeholder);
+      lastSandboxResultType = "placeholder";
+      lastSandboxQueryKey = null;
+      lastSandboxErrorCode = null;
+    }
+
+    function buildSandboxResultAll() {
+      const t = translations[currentLang];
+      return {
+        title: t.sandboxResultTitleAll,
+        columns: [
+          { key: "member", label: t.sandboxColMember },
+          { key: "status", label: t.sandboxColStatus },
+          { key: "seats", label: t.sandboxColSeats }
+        ],
+        rows: sandboxMembers.map(member => ({
+          member: currentLang === "zh" ? member.nameZh : member.nameEn,
+          status: translateSandboxStatus(member.status),
+          seats: member.seats
+        }))
+      };
+    }
+
+    function buildSandboxResultStatus() {
+      const t = translations[currentLang];
+      return {
+        title: t.sandboxResultTitleStatus,
+        columns: [
+          { key: "member", label: t.sandboxColMember },
+          { key: "status", label: t.sandboxColStatus }
+        ],
+        rows: sandboxMembers.map(member => ({
+          member: currentLang === "zh" ? member.nameZh : member.nameEn,
+          status: translateSandboxStatus(member.status)
+        }))
+      };
+    }
+
+    function buildSandboxResultCount() {
+      const t = translations[currentLang];
+      const confirmedCount = sandboxMembers.filter(member => member.status === "confirmed").length;
+      return {
+        title: t.sandboxResultTitleCount,
+        columns: [
+          { key: "count", label: t.sandboxColCount }
+        ],
+        rows: [
+          { count: confirmedCount }
+        ]
+      };
+    }
+
+    function translateSandboxStatus(status) {
+      const t = translations[currentLang];
+      switch (status) {
+        case "confirmed":
+          return t.sandboxStatusConfirmed;
+        case "pending":
+          return t.sandboxStatusPending;
+        case "waitlist":
+          return t.sandboxStatusWaitlist;
+        default:
+          return status;
+      }
+    }
+
+    function renderSandboxSuccess(result) {
+      if (!sandboxResultEl || !result) return;
+      sandboxResultEl.innerHTML = "";
+      const titleEl = document.createElement("div");
+      titleEl.className = "sandbox-title";
+      titleEl.textContent = result.title;
+      sandboxResultEl.appendChild(titleEl);
+
+      const table = document.createElement("table");
+      table.className = "sandbox-table";
+      const thead = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      result.columns.forEach(col => {
+        const th = document.createElement("th");
+        th.textContent = col.label;
+        headRow.appendChild(th);
+      });
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      result.rows.forEach(row => {
+        const tr = document.createElement("tr");
+        result.columns.forEach(col => {
+          const td = document.createElement("td");
+          td.textContent = row[col.key] != null ? row[col.key] : "";
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      sandboxResultEl.appendChild(table);
+      lastSandboxResultType = "success";
+      lastSandboxErrorCode = null;
+    }
+
+    function renderSandboxError(code) {
+      if (!sandboxResultEl) return;
+      const t = translations[currentLang];
+      sandboxResultEl.innerHTML = "";
+      const errorEl = document.createElement("div");
+      errorEl.className = "sandbox-error";
+      if (code === "empty") {
+        errorEl.textContent = t.sandboxErrorEmpty;
+      } else {
+        errorEl.textContent = t.sandboxErrorUnknown;
+      }
+      sandboxResultEl.appendChild(errorEl);
+      lastSandboxResultType = "error";
+      lastSandboxErrorCode = code;
+    }
+
+    function normalizeQuery(query) {
+      return query.toUpperCase().replace(/\s+/g, " ").trim().replace(/;$/, "");
+    }
+
+    function handleSandboxRun() {
+      if (!sandboxQueryInput) return;
+      const query = sandboxQueryInput.value.trim();
+      if (!query) {
+        renderSandboxError("empty");
+        return;
+      }
+      const normalized = normalizeQuery(query);
+      const handler = sandboxQueryHandlers[normalized];
+      if (typeof handler === "function") {
+        const result = handler();
+        renderSandboxSuccess(result);
+        lastSandboxQueryKey = normalized;
+        sandboxPristine = false;
+      } else {
+        renderSandboxError("unknown");
+        lastSandboxQueryKey = null;
+        sandboxPristine = false;
+      }
+    }
+
+    function handleSandboxReset() {
+      sandboxPristine = true;
+      updateSandboxDefaultQuery();
+      showSandboxPlaceholder();
+    }
+
+    function initializeMilestoneCopy() {
+      if (!milestoneCopyEl) return;
+      if (!milestoneInitialized) {
+        renderMilestoneCopy(true);
+        milestoneInitialized = true;
+      } else if (!milestoneDirty) {
+        renderMilestoneCopy(false);
+      }
+      setMilestoneStatus(null);
+    }
+
+    function renderMilestoneCopy(forceRandom = false) {
+      if (!milestoneCopyEl) return;
+      const templates = milestoneTemplates[currentLang];
+      if (!templates || templates.length === 0) return;
+      if (forceRandom || currentMilestoneIndex >= templates.length) {
+        currentMilestoneIndex = Math.floor(Math.random() * templates.length);
+      }
+      const template = templates[currentMilestoneIndex % templates.length];
+      const filled = applyMilestoneTokens(template);
+      milestoneCopyEl.value = filled;
+      milestoneDirty = false;
+    }
+
+    function applyMilestoneTokens(template) {
+      const t = translations[currentLang];
+      const tokens = {
+        course: t.courseName,
+        code: t.courseCode,
+        hours: t.courseHours
+      };
+      return template.replace(/\{(\w+)\}/g, (match, key) => {
+        return tokens[key] !== undefined ? tokens[key] : match;
+      });
+    }
+
+    function setMilestoneStatus(key) {
+      if (!milestoneStatusEl) return;
+      if (!key) {
+        milestoneStatusEl.textContent = "";
+        return;
+      }
+      const t = translations[currentLang];
+      milestoneStatusEl.textContent = t[key] || "";
+    }
+
+    function showToast(message) {
+      if (!toastEl) return;
+      toastEl.textContent = message;
+      toastEl.classList.add("is-active");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => {
+        toastEl.classList.remove("is-active");
+      }, 2800);
+    }
+
+    function generateCalendarCSI() {
+      const now = new Date();
+      const dtStamp = formatICSDate(now);
+      const t = translations[currentLang];
+      const summary = t.courseName;
+      const location = translations.zh.locationValue;
+      const description = `${summary}｜${t.courseCode}`;
+      let events = "";
+      courseSessions.forEach((session, index) => {
+        const start = new Date(session.start);
+        const end = new Date(session.end);
+        const uid = `sql-course-session-${index + 1}@cpttm.mo`;
+        events += [
+          "BEGIN:VEVENT",
+          `UID:${uid}`,
+          `DTSTAMP:${dtStamp}`,
+          `DTSTART:${formatICSDate(start)}`,
+          `DTEND:${formatICSDate(end)}`,
+          `SUMMARY:${summary}`,
+          `LOCATION:${location}`,
+          `DESCRIPTION:${description}`,
+          "END:VEVENT"
+        ].join("\r\n") + "\r\n";
+      });
+
+      const calendar = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//CPTTM//SQL COURSE DETAIL//ZH",
+        events.trim(),
+        "END:VCALENDAR"
+      ].join("\r\n");
+
+      return calendar;
+    }
+
+    function formatICSDate(date) {
+      return date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    }
+
+    function handleConflictCheck(event) {
+      event.preventDefault();
+      const codeRaw = conflictCodeInput.value.trim();
+      conflictState = { status: "idle", sessionIndex: null, otherCourse: null, otherSessionIndex: null, code: codeRaw };
+      if (!codeRaw) {
+        conflictState.status = "invalid";
+        renderConflictResult();
+        return;
+      }
+
+      const code = codeRaw.toUpperCase();
+      const otherCourse = otherCourses.find(course => course.code.toUpperCase() === code);
+
+      if (!otherCourse) {
+        conflictState.status = "not-found";
+        conflictState.code = codeRaw;
+        renderConflictResult();
+        return;
+      }
+
+      let foundConflict = false;
+      let conflictPrimaryIndex = null;
+      let conflictOtherIndex = null;
+
+      for (let i = 0; i < courseSessions.length; i++) {
+        const primarySession = courseSessions[i];
+        const primaryStart = new Date(primarySession.start);
+        const primaryEnd = new Date(primarySession.end);
+
+        for (let j = 0; j < otherCourse.sessions.length; j++) {
+          const otherSession = otherCourse.sessions[j];
+          const otherStart = new Date(otherSession.start);
+          const otherEnd = new Date(otherSession.end);
+
+          if (primaryStart < otherEnd && primaryEnd > otherStart) {
+            foundConflict = true;
+            conflictPrimaryIndex = i;
+            conflictOtherIndex = j;
+            break;
+          }
+        }
+        if (foundConflict) break;
+      }
+
+      if (foundConflict) {
+        conflictState = {
+          status: "conflict",
+          sessionIndex: conflictPrimaryIndex,
+          otherCourse,
+          otherSessionIndex: conflictOtherIndex,
+          code: codeRaw
+        };
+      } else {
+        conflictState = {
+          status: "no-conflict",
+          sessionIndex: null,
+          otherCourse,
+          otherSessionIndex: null,
+          code: codeRaw
+        };
+      }
+
+      renderConflictResult();
+    }
+
+    function updateTourLocalizedTexts() {
+      const t = translations[currentLang];
+      if (startTourBtn) {
+        startTourBtn.textContent = t.tourButton;
+        startTourBtn.setAttribute("aria-label", t.tourButton);
+      }
+      if (tourPrevBtn) {
+        tourPrevBtn.textContent = t.tourStepPrev;
+      }
+      if (tourNextBtn && !tourActive) {
+        tourNextBtn.textContent = t.tourStepNext;
+      }
+      if (tourCloseBtn) {
+        tourCloseBtn.setAttribute("aria-label", t.tourStepClose);
+      }
+      if (tourProgressEl && tourActive) {
+        tourProgressEl.textContent = t.tourProgress.replace("{current}", currentTourIndex + 1).replace("{total}", tourStepsConfig.length);
+      }
+    }
+
+    function startTour() {
+      if (!tourLayer || !tourSpotlight || !tourTooltip) return;
+      if (!tourActive) {
+        tourActive = true;
+        currentTourIndex = 0;
+        tourLayer.hidden = false;
+        tourLayer.setAttribute("aria-hidden", "false");
+        tourLayer.classList.add("is-active");
+        tourSpotlight.style.transform = "none";
+        document.addEventListener("keydown", handleTourKeydown);
+        window.addEventListener("resize", handleTourReposition, { passive: true });
+        window.addEventListener("scroll", handleTourReposition, { passive: true });
+      }
+      showTourStep(currentTourIndex);
+    }
+
+    function endTour() {
+      if (!tourActive || !tourLayer) return;
+      tourActive = false;
+      currentTourTarget = null;
+      tourLayer.classList.remove("is-active");
+      tourLayer.setAttribute("aria-hidden", "true");
+      tourLayer.hidden = true;
+      tourSpotlight.style.width = "0px";
+      tourSpotlight.style.height = "0px";
+      tourSpotlight.style.opacity = "0";
+      clearTimeout(tourScrollTimeout);
+      tourScrollTimeout = null;
+      document.removeEventListener("keydown", handleTourKeydown);
+      window.removeEventListener("resize", handleTourReposition);
+      window.removeEventListener("scroll", handleTourReposition);
+      if (startTourBtn) {
+        startTourBtn.focus({ preventScroll: true });
+      }
+    }
+
+    function showTourStep(index, options = {}) {
+      const { scroll = true } = options;
+      const step = tourStepsConfig[index];
+      if (!step) {
+        endTour();
+        return;
+      }
+      const target = document.querySelector(step.selector);
+      if (!target) {
+        const nextIndex = index + 1;
+        if (nextIndex < tourStepsConfig.length) {
+          showTourStep(nextIndex, { scroll });
+        } else {
+          endTour();
+        }
+        return;
+      }
+
+      currentTourIndex = index;
+      currentTourTarget = target;
+
+      const t = translations[currentLang];
+      if (tourTitleEl) {
+        tourTitleEl.textContent = t[step.titleKey] || "";
+      }
+      if (tourBodyEl) {
+        tourBodyEl.textContent = t[step.bodyKey] || "";
+      }
+      if (tourPrevBtn) {
+        tourPrevBtn.disabled = index === 0;
+        tourPrevBtn.textContent = t.tourStepPrev;
+      }
+      if (tourNextBtn) {
+        const isLast = index === tourStepsConfig.length - 1;
+        tourNextBtn.textContent = isLast ? t.tourStepFinish : t.tourStepNext;
+        tourNextBtn.classList.toggle("is-finish", isLast);
+      }
+      if (tourProgressEl) {
+        tourProgressEl.textContent = t.tourProgress.replace("{current}", index + 1).replace("{total}", tourStepsConfig.length);
+      }
+      if (tourCloseBtn) {
+        tourCloseBtn.setAttribute("aria-label", t.tourStepClose);
+      }
+
+      if (scroll) {
+        target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        clearTimeout(tourScrollTimeout);
+        tourScrollTimeout = setTimeout(() => updateTourSpotlight(target), 420);
+      } else {
+        updateTourSpotlight(target);
+      }
+
+      setTimeout(() => {
+        if (tourTooltip) {
+          tourTooltip.focus({ preventScroll: true });
+        }
+      }, 30);
+    }
+
+    function updateTourSpotlight(target) {
+      if (!tourSpotlight || !target) return;
+      const rect = target.getBoundingClientRect();
+      const padding = 16;
+      const top = Math.max(rect.top - padding, 8);
+      const left = Math.max(rect.left - padding, 8);
+      const rightLimit = window.innerWidth - 8;
+      const bottomLimit = window.innerHeight - 8;
+      const width = Math.min(rect.width + padding * 2, rightLimit - left);
+      const height = Math.min(rect.height + padding * 2, bottomLimit - top);
+      const computedRadius = window.getComputedStyle(target).borderRadius;
+      const radius = computedRadius && computedRadius !== "0px" ? computedRadius : "18px";
+
+      tourSpotlight.style.top = `${top}px`;
+      tourSpotlight.style.left = `${left}px`;
+      tourSpotlight.style.width = `${Math.max(width, 100)}px`;
+      tourSpotlight.style.height = `${Math.max(height, 80)}px`;
+      tourSpotlight.style.borderRadius = radius;
+      tourSpotlight.style.opacity = "1";
+      tourSpotlight.style.transform = "none";
+    }
+
+    function handleTourReposition() {
+      if (!tourActive || !currentTourTarget) return;
+      updateTourSpotlight(currentTourTarget);
+    }
+
+    function handleTourKeydown(event) {
+      if (!tourActive) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        endTour();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goToTourNext();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goToTourPrev();
+      }
+    }
+
+    function goToTourNext() {
+      if (!tourActive) return;
+      if (currentTourIndex >= tourStepsConfig.length - 1) {
+        endTour();
+      } else {
+        showTourStep(currentTourIndex + 1);
+      }
+    }
+
+    function goToTourPrev() {
+      if (!tourActive) return;
+      if (currentTourIndex > 0) {
+        showTourStep(currentTourIndex - 1);
+      }
+    }
+
+    langButtons.forEach(btn => {
+      btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+    });
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      langButtons.forEach(btn => {
+        const isActive = btn.dataset.lang === lang;
+        btn.classList.toggle("lang-btn--active", isActive);
+        btn.setAttribute("aria-pressed", String(isActive));
+      });
+      applyTranslations();
+    }
+
+    if (favoriteBtn) {
+      favoriteBtn.addEventListener("click", () => {
+        favoriteState = !favoriteState;
+        localStorage.setItem("sql_course_favorite", String(favoriteState));
+        updateFavoriteButton();
+        const t = translations[currentLang];
+        showToast(favoriteState ? t.favoriteToastAdd : t.favoriteToastRemove);
+      });
+    }
+
+    if (notifyBtn) {
+      notifyBtn.addEventListener("click", () => {
+        notifyState = !notifyState;
+        localStorage.setItem("sql_course_notify", String(notifyState));
+        updateNotifyButton();
+        const t = translations[currentLang];
+        showToast(notifyState ? t.notifyToastAdd : t.notifyToastRemove);
+      });
+    }
+
+    if (checklistEl) {
+      checklistEl.addEventListener("click", event => {
+        const button = event.target.closest(".checklist__toggle");
+        if (!button) return;
+        const itemId = button.dataset.itemId;
+        const current = Boolean(checklistState[itemId]);
+        checklistState[itemId] = !current;
+        localStorage.setItem("sql_course_checklist", JSON.stringify(checklistState));
+        renderChecklist();
+      });
+    }
+
+    if (calendarBtn) {
+      calendarBtn.addEventListener("click", () => {
+        const calendarContent = generateCalendarCSI();
+        const blob = new Blob([calendarContent], { type: "text/calendar;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "sql-language-intro.csi";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(translations[currentLang].calendarToast);
+      });
+    }
+
+    if (conflictForm) {
+      conflictForm.addEventListener("submit", handleConflictCheck);
+    }
+
+    if (sandboxRunBtn) {
+      sandboxRunBtn.addEventListener("click", handleSandboxRun);
+    }
+
+    if (sandboxResetBtn) {
+      sandboxResetBtn.addEventListener("click", handleSandboxReset);
+    }
+
+    if (sandboxQueryInput) {
+      sandboxQueryInput.addEventListener("input", () => {
+        sandboxPristine = false;
+      });
+    }
+
+    if (milestoneCopyEl) {
+      milestoneCopyEl.addEventListener("input", () => {
+        milestoneDirty = true;
+        setMilestoneStatus("milestoneStatusCustom");
+      });
+    }
+
+    if (milestoneRefreshBtn) {
+      milestoneRefreshBtn.addEventListener("click", () => {
+        renderMilestoneCopy(true);
+        setMilestoneStatus("milestoneStatusRefreshed");
+      });
+    }
+
+    if (milestoneCopyBtn) {
+      milestoneCopyBtn.addEventListener("click", async () => {
+        const t = translations[currentLang];
+        if (!milestoneCopyEl) return;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(milestoneCopyEl.value);
+            setMilestoneStatus("milestoneStatusCopied");
+            showToast(t.milestoneToastCopied);
+          } else {
+            throw new Error("Clipboard unsupported");
+          }
+        } catch (error) {
+          setMilestoneStatus("milestoneStatusCopyError");
+          showToast(t.milestoneToastCopyError);
+        }
+      });
+    }
+
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+
+    if (startTourBtn) {
+      startTourBtn.addEventListener("click", startTour);
+    }
+
+    if (tourCloseBtn) {
+      tourCloseBtn.addEventListener("click", endTour);
+    }
+
+    if (tourPrevBtn) {
+      tourPrevBtn.addEventListener("click", goToTourPrev);
+    }
+
+    if (tourNextBtn) {
+      tourNextBtn.addEventListener("click", goToTourNext);
+    }
+
+    applyTranslations();
+    if (conflictCodeInput) {
+      conflictCodeInput.value = conflictState.code || "";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+{
+  "courses": [
+    {
+      "id": "CS001",
+      "name": "Python 程式設計入門",
+      "price": "MOP 2,500",
+      "startDate": "2025-11-15",
+      "seats": "20"
+      ,"image": "ATD538.png"
+    },
+    {
+      "id": "CS002",
+      "name": "Web 開發全攻略",
+      "price": "MOP 3,200",
+      "startDate": "2025-11-20",
+      "seats": "15"
+      ,"image": "ATP553.png"
+    },
+    {
+      "id": "CS003",
+      "name": "數據分析與視覺化",
+      "price": "MOP 2,800",
+      "startDate": "2025-11-25",
+      "seats": "18"
+      ,"image": "CM292.png"
+    },
+    {
+      "id": "CS004",
+      "name": "AI 人工智能基礎",
+      "price": "MOP 3,500",
+      "startDate": "2025-12-01",
+      "seats": "12"
+      ,"image": "CM346.png"
+    },
+    {
+      "id": "CS005",
+      "name": "行動應用開發",
+      "price": "MOP 3,000",
+      "startDate": "2025-12-05",
+      "seats": "16"
+      ,"image": "CM429.png"
+    },
+    {
+      "id": "CS006",
+      "name": "雲端運算實務",
+      "price": "MOP 2,600",
+      "startDate": "2025-12-10",
+      "seats": "20"
+      ,"image": "CM459.png"
+    },
+    {
+      "id": "BZ001",
+      "name": "數位行銷策略",
+      "price": "MOP 2,200",
+      "startDate": "2025-11-18",
+      "seats": "25"
+      ,"image": "CM532.png"
+    },
+    {
+      "id": "BZ002",
+      "name": "商業數據分析",
+      "price": "MOP 2,900",
+      "startDate": "2025-11-22",
+      "seats": "18"
+      ,"image": "CM534.png"
+    },
+    {
+      "id": "BZ003",
+      "name": "創業管理實務",
+      "price": "MOP 2,400",
+      "startDate": "2025-12-08",
+      "seats": "22"
+      ,"image": "CM540.png"
+    }
+  ]
+}
