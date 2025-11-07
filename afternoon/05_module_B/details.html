@@ -608,9 +608,14 @@
 		}
 
 		document.addEventListener('DOMContentLoaded', async () => {
-			await _loadPage(1);
+			// await _loadPage(1);
 
-			const dataString = sessionStorage.getItem('currentCourse');
+			let dataString = sessionStorage.getItem('currentCourse');
+			if (!dataString) {
+				await _loadPage(1);
+			}
+			dataString = sessionStorage.getItem('currentCourse');
+
 			if (!dataString) {
 				document.querySelector('main').innerHTML = '<div class="p-6 bg-white rounded shadow text-center text-red-500">找不到課程資料。請返回列表頁重試。</div>';
 				return;
