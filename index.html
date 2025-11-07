@@ -1,381 +1,111 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>2025 手機網站設計大賽 - 作品展示</title>
-	<style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
-
-		body {
-			font-family: 'Arial', sans-serif;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			color: #333;
-			line-height: 1.6;
-			min-height: 100vh;
-		}
-
-		.container {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 2rem;
-		}
-
-		.hero {
-			text-align: center;
-			color: white;
-			margin-bottom: 3rem;
-			padding: 3rem 1rem;
-		}
-
-		.hero h1 {
-			font-size: 3rem;
-			font-weight: 800;
-			margin-bottom: 1rem;
-		}
-
-		.hero-subtitle {
-			font-size: 1.25rem;
-			margin-bottom: 2rem;
-			opacity: 0.9;
-		}
-
-		.hero-stats {
-			display: flex;
-			justify-content: center;
-			gap: 3rem;
-			flex-wrap: wrap;
-		}
-
-		.stat {
-			text-align: center;
-		}
-
-		.stat-number {
-			font-size: 2.5rem;
-			font-weight: 700;
-			color: #f6ad55;
-		}
-
-		.stat-label {
-			font-size: 0.9rem;
-			opacity: 0.8;
-		}
-
-		.section {
-			background: white;
-			border-radius: 20px;
-			padding: 2.5rem;
-			margin-bottom: 2rem;
-			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-		}
-
-		.section-title {
-			font-size: 1.75rem;
-			font-weight: 700;
-			margin-bottom: 2rem;
-			color: #2d3748;
-		}
-
-		.team-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-			gap: 2rem;
-		}
-
-		.team-card {
-			background: #f7fafc;
-			border-radius: 12px;
-			padding: 2rem;
-			border: 1px solid #e2e8f0;
-			transition: all 0.3s ease;
-		}
-
-		.team-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-		}
-
-		.team-rank {
-			position: absolute;
-			top: 1rem;
-			right: 1rem;
-			width: 40px;
-			height: 40px;
-			border-radius: 50%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-weight: 700;
-			color: white;
-		}
-
-		.rank-1 {
-			background: linear-gradient(135deg, #f6ad55, #ed8936);
-		}
-
-		.rank-2 {
-			background: linear-gradient(135deg, #a0aec0, #718096);
-		}
-
-		.rank-3 {
-			background: linear-gradient(135deg, #ed8936, #dd6b20);
-		}
-
-		.team-name {
-			font-size: 1.5rem;
-			font-weight: 600;
-			margin-bottom: 0.5rem;
-			color: #2d3748;
-		}
-
-		.team-school {
-			font-size: 1rem;
-			color: #667eea;
-			font-weight: 500;
-			margin-bottom: 1.5rem;
-			padding: 0.5rem 1rem;
-			background: rgba(102, 126, 234, 0.1);
-			border-radius: 8px;
-			display: inline-block;
-		}
-
-		.team-members {
-			display: flex;
-			flex-direction: column;
-			gap: 0.75rem;
-			margin-bottom: 1.5rem;
-		}
-
-		.member {
-			display: flex;
-			align-items: center;
-			gap: 0.75rem;
-			padding: 0.75rem;
-			background: white;
-			border-radius: 8px;
-			border: 1px solid #e2e8f0;
-		}
-
-		.member-avatar {
-			width: 40px;
-			height: 40px;
-			border-radius: 50%;
-			background: linear-gradient(135deg, #667eea, #764ba2);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: white;
-			font-weight: 600;
-		}
-
-		.member-name {
-			font-weight: 500;
-			color: #2d3748;
-		}
-
-		.project-link {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.5rem;
-			background: linear-gradient(135deg, #667eea, #764ba2);
-			color: white;
-			text-decoration: none;
-			padding: 0.75rem 1.5rem;
-			border-radius: 8px;
-			font-weight: 500;
-			transition: all 0.3s ease;
-			width: 100%;
-			justify-content: center;
-		}
-
-		.project-link:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-		}
-
-		.footer {
-			text-align: center;
-			padding: 2rem;
-			color: white;
-			opacity: 0.8;
-			margin-top: 3rem;
-		}
-
-		@media (max-width: 768px) {
-			.container {
-				padding: 1rem;
-			}
-
-			.section {
-				padding: 1.5rem;
-			}
-
-			.team-grid {
-				grid-template-columns: 1fr;
-			}
-
-			.hero-stats {
-				gap: 1.5rem;
-			}
-
-			.stat-number {
-				font-size: 2rem;
-			}
-		}
-	</style>
+	<title>2025 年第八屆全澳中學生手機網站技術技能比賽 | 澳門生產力暨科技轉移中心</title>
+	<link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-	<div class="container">
-		<section class="hero">
-			<h1>2025 手機網站設計大賽</h1>
-			<p class="hero-subtitle">創新思維 · 技術實踐 · 未來展望</p>
-			<div class="hero-stats">
-				<div class="stat">
-					<div class="stat-number">12</div>
-					<div class="stat-label">參賽隊伍</div>
+	<header>
+		<div class="corp">
+			合辦<br>單位
+		</div>
+		<div class="cpttm">
+			<img src="./images/CPTTM.png" alt="CPTTM Logo">
+		</div>
+		<div class="dsedj">
+			<img src="./images/DSEDJ.png" alt="DSEDJ Logo">
+		</div>
+
+		<div class="sup">
+			支持<br>單位
+		</div>
+		<div class="msc">
+			<img src="./images/MSC.webp" alt="MSC Logo">
+		</div>
+		<div class="mcs">
+			<img src="./images/MCS2.png" alt="MCS Logo">
+		</div>
+	</header>
+	<h1>
+		<span style="font-weight: normal; font-size: 1.2rem;">
+			2025年 第八屆 全澳中學生
+		</span>
+		<div class="glow">手機網站技術</div>
+		<small>
+			技能比賽
+		</small>
+	</h1>
+	<main>
+
+		<h2>作品演示</h2>
+
+		<section>
+			<div class="medal">
+				<img src="./images/Icons_GOLD.svg" alt="GOLD Medal">
+			</div>
+			<div class="names">
+				<div class="school-name">
+					培正中學
 				</div>
-				<div class="stat">
-					<div class="stat-number">24</div>
-					<div class="stat-label">優秀選手</div>
-				</div>
-				<div class="stat">
-					<div class="stat-number">6</div>
-					<div class="stat-label">獲獎作品</div>
+				<div class="comp-name animate-charcter">
+					李倬霖 羅天逸
 				</div>
 			</div>
+			<ul class="work-icons">
+				<li class="button">
+					<a href="./morning/01_module_A/index.html">
+						A
+					</a>
+				</li>
+				<li class="button"><a href="./afternoon/01_module_B/index.html">B</a></li>
+			</ul>
 		</section>
 
-		<!-- 上午場比賽 -->
-		<section class="section">
-			<h2 class="section-title">上午場比賽 - 獲獎作品</h2>
-			<div class="team-grid">
-				<!-- 冠軍隊伍 -->
-				<div class="team-card">
-					<div class="team-rank rank-1">🥇</div>
-					<h3 class="team-name">模組 A 冠軍</h3>
-					<div class="team-school">澳門科技大學</div>
-					<div class="team-members">
-						<div class="member">
-							<div class="member-avatar">A1</div>
-							<div class="member-name">張小明</div>
-						</div>
-						<div class="member">
-							<div class="member-avatar">A2</div>
-							<div class="member-name">李美華</div>
-						</div>
-					</div>
-					<a href="morning/01_module_A/index.html" class="project-link" target="_blank">查看作品</a>
+		<section>
+			<div class="medal">
+				<img src="./images/Icons_SILVER.svg" alt="SILVER Medal">
+			</div>
+			<div class="names">
+				<div class="school-name">
+					聖若瑟教區中學第五校(英文部)
 				</div>
-
-				<!-- 亞軍隊伍 -->
-				<div class="team-card">
-					<div class="team-rank rank-2">🥈</div>
-					<h3 class="team-name">模組 A 亞軍</h3>
-					<div class="team-school">澳門大學</div>
-					<div class="team-members">
-						<div class="member">
-							<div class="member-avatar">B1</div>
-							<div class="member-name">陳大文</div>
-						</div>
-						<div class="member">
-							<div class="member-avatar">B2</div>
-							<div class="member-name">黃小玉</div>
-						</div>
-					</div>
-					<a href="morning/04_module_A/index.html" class="project-link" target="_blank">查看作品</a>
-				</div>
-
-				<!-- 季軍隊伍 -->
-				<div class="team-card">
-					<div class="team-rank rank-3">🥉</div>
-					<h3 class="team-name">模組 A 季軍</h3>
-					<div class="team-school">澳門理工大學</div>
-					<div class="team-members">
-						<div class="member">
-							<div class="member-avatar">C1</div>
-							<div class="member-name">林志強</div>
-						</div>
-						<div class="member">
-							<div class="member-avatar">C2</div>
-							<div class="member-name">王美麗</div>
-						</div>
-					</div>
-					<a href="morning/05_module_A/index.html" class="project-link" target="_blank">查看作品</a>
+				<div class="comp-name animate-charcter">
+					柯彬淼 湯浩希
 				</div>
 			</div>
+			<ul class="work-icons">
+				<li class="button"><a href="./morning/05_module_A/index.html">A</a></li>
+				<li class="button"><a href="./afternoon/05_module_B/details.html?code=CM429-01-2025-C">B</a></li>
+			</ul>
 		</section>
 
-		<!-- 下午場比賽 -->
-		<section class="section">
-			<h2 class="section-title">下午場比賽 - 獲獎作品</h2>
-			<div class="team-grid">
-				<!-- 冠軍隊伍 -->
-				<div class="team-card">
-					<div class="team-rank rank-1">🥇</div>
-					<h3 class="team-name">模組 B 冠軍</h3>
-					<div class="team-school">澳門科技大學</div>
-					<div class="team-members">
-						<div class="member">
-							<div class="member-avatar">D1</div>
-							<div class="member-name">劉德華</div>
-						</div>
-						<div class="member">
-							<div class="member-avatar">D2</div>
-							<div class="member-name">周慧敏</div>
-						</div>
-					</div>
-					<a href="afternoon/01_module_B/index.html" class="project-link" target="_blank">查看作品</a>
+		<section>
+			<div class="medal">
+				<img src="./images/Icons_BRONZE.svg" alt="BRONZE Medal">
+			</div>
+			<div class="names">
+				<div class="school-name">
+					濠江中學
 				</div>
-
-				<!-- 亞軍隊伍 -->
-				<div class="team-card">
-					<div class="team-rank rank-2">🥈</div>
-					<h3 class="team-name">模組 B 亞軍</h3>
-					<div class="team-school">澳門大學</div>
-					<div class="team-members">
-						<div class="member">
-							<div class="member-avatar">E1</div>
-							<div class="member-name">郭富城</div>
-						</div>
-						<div class="member">
-							<div class="member-avatar">E2</div>
-							<div class="member-name">張曼玉</div>
-						</div>
-					</div>
-					<a href="afternoon/04_module_B/index.html" class="project-link" target="_blank">查看作品</a>
-				</div>
-
-				<!-- 季軍隊伍 -->
-				<div class="team-card">
-					<div class="team-rank rank-3">🥉</div>
-					<h3 class="team-name">模組 B 季軍</h3>
-					<div class="team-school">澳門理工大學</div>
-					<div class="team-members">
-						<div class="member">
-							<div class="member-avatar">F1</div>
-							<div class="member-name">黎明</div>
-						</div>
-						<div class="member">
-							<div class="member-avatar">F2</div>
-							<div class="member-name">關之琳</div>
-						</div>
-					</div>
-					<a href="afternoon/05_module_B/index.html" class="project-link" target="_blank">查看作品</a>
+				<div class="comp-name animate-charcter">
+					陳天澤 黃錦霖
 				</div>
 			</div>
+			<ul class="work-icons">
+				<li class="button"><a href="./morning/04_module_A/index.html">A</a></li>
+				<li class="button"><a href="./afternoon/04_module_B/public/detail.html?id=CM429-01-2025-C">B</a></li>
+			</ul>
 		</section>
 
-		<footer class="footer">
-			<p>© 2025 手機網站設計大賽 - 表彰優秀選手，激發創新潛能</p>
-		</footer>
-	</div>
+	</main>
+
+	<footer>
+		&copy; 2024 CPTTM.
+	</footer>
 </body>
 
 </html>
